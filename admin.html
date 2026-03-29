@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <title>Supreme IT Admin - Dashboard</title>
+  <style>
+    :root { --gold: #c9a84c; --bg: #0d0d0d; --card: #161616; --text: #f5f0e8; }
+    body { font-family: sans-serif; background: var(--bg); color: var(--text); padding: 15px; }
+    .box { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid #333; margin-bottom: 20px; max-width: 700px; margin: auto; }
+    input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; background: #222; border: 1px solid #444; color: #fff; border-radius: 8px; box-sizing: border-box; }
+    .btn-gold { width: 100%; padding: 15px; background: var(--gold); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: #000; }
+    .tabs { display: flex; gap: 10px; margin-bottom: 20px; justify-content: center; }
+    .tab-btn { padding: 10px 20px; border: 1px solid var(--gold); background: transparent; color: #fff; cursor: pointer; border-radius: 5px; }
+    .active { background: var(--gold); color: #000; }
+    .order-row { border-bottom: 1px solid #333; padding: 15px 0; }
+  </style>
+</head>
+<body>
+
+<div id="login-box" class="box" style="text-align:center; margin-top: 100px;">
+  <h2 style="color:var(--gold)">Admin Login</h2>
+  <input type="text" id="user" placeholder="Username">
+  <input type="password" id="pass" placeholder="Password">
+  <button class="btn-gold" id="loginBtn">Login</button>
+</div>
+
+<div id="main-content" style="display:none;">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="tab('food')">মেনু ম্যানেজমেন্ট</button>
+    <button class="tab-btn" onclick="tab('orders')">অর্ডার ট্র্যাকিং</button>
+  </div>
+
+  <div id="food" class="tab-content">
+    <div class="box">
+      <h3>খাবার যোগ/এডিট করুন</h3>
+      <input type="hidden" id="editId">
+      <input type="text" id="iName" placeholder="খাবারের নাম">
+      <input type="number" id="iPrice" placeholder="মূল্য">
+      <input type="text" id="iImg" placeholder="ইমেজ লিঙ্ক (ImgBB)">
+      <button class="btn-gold" id="saveItem">আইটেম সেভ করুন</button>
+    </div>
+    <div class="box" id="adminMenuList">লোড হচ্ছে...</div>
+  </div>
+
+  <div id="orders" class="tab-content" style="display:none;">
+    <div class="box" id="adminOrderList"></div>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+  import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, updateDoc, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAIBAoApGa4HXrdk15tezQl9WYeIIGEci4",
+    authDomain: "qr-menu-system-88ea9.firebaseapp.com",
+    projectId: "qr-menu-system-88ea9",
+    appId: "1:1038515456469:web:bfd7366988b7119ea9155c"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // লগইন চেক
+  document.getElementById('loginBtn').onclick = () => {
+    if(document.getElementById('user').value === "demo-restaurant" && document.getElementById('pass').value === "admin123") {
+      document.getElementById('login-box').style.display = 'none';
+      document.getElementById('main-content').style.display = 'block';
+    } else { alert("ভুল পাসওয়ার্ড!"); }
+  };
+
+  window.tab = (id) => {
+    document.querySelectorAll('.tab-content').forEach(c => c.style.display='none');
+    document.getElementById(id).style.display='block';
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    event.target.classList.add('active');
+  };
+
+  // আইটেম সেভ/আপডেট
+  document.getElementById('saveItem').onclick = async () => {
+    const id = document.getElementById('editId').value;
+    const data = { name: document.getElementById('iName').value, price: parseFloat(document.getElementById('iPrice').value), image: document.getElementById('iImg').value, createdAt: serverTimestamp() };
+    if(id) await updateDoc(doc(db, "restaurants/demo-restaurant/menu", id), data);
+    else await addDoc(collection(db, "restaurants/demo-restaurant/menu"), data);
+    alert("Saved!"); location.reload();
+  };
+
+  // মেনু লিস্ট উইথ ডিলিট অপশন
+  onSnapshot(query(collection(db, "restaurants/demo-restaurant/menu"), orderBy("createdAt", "desc")), (snap) => {
+    const list = document.getElementById('adminMenuList'); list.innerHTML = '<h4>বর্তমান মেনু</h4>';
+    snap.forEach(d => {
+      const i = d.data();
+      list.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+        <span>${i.name} - ৳${i.price}</span>
+        <button onclick="deleteItem('${d.id}')" style="background:red; color:white; border:none; border-radius:4px;">Del</button>
+      </div>`;
+    });
+  });
+
+  window.deleteItem = async (id) => { if(confirm("মুছে ফেলবেন?")) await deleteDoc(doc(db, "restaurants/demo-restaurant/menu", id)); };
+
+  // অর্ডার ও স্ট্যাটাস আপডেট (Processing/Serving/Done)
+  onSnapshot(query(collection(db, "orders"), orderBy("timestamp", "desc")), (snap) => {
+    const list = document.getElementById('adminOrderList'); list.innerHTML = '<h3>অর্ডার লিস্ট</h3>';
+    snap.forEach(d => {
+        const o = d.data();
+        list.innerHTML += `<div class="order-row">
+            <b>টেবিল: ${o.table_number}</b> | কাস্টমার: ${o.customer_name}<br>
+            খাবার: ${o.items} | বিল: ৳${o.total_amount}<br>
+            পেমেন্ট: ${o.payment_method} (${o.payment_status})<br>
+            স্ট্যাটাস: <b>${o.order_status}</b><br>
+            <select onchange="updateStatus('${d.id}', this.value)">
+                <option value="">স্ট্যাটাস পরিবর্তন</option>
+                <option value="Processing">Processing</option>
+                <option value="Serving">Serving</option>
+                <option value="Done">Done</option>
+            </select>
+        </div>`;
+    });
+  });
+
+  window.updateStatus = async (id, status) => { if(status) await updateDoc(doc(db, "orders", id), { order_status: status }); };
+</script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Supreme IT - Premium Menu</title>
+  <style>
+    :root { --gold: #c9a84c; --bg: #0d0d0d; --card: #1a1a1a; --text: #f5f0e8; }
+    body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding-bottom: 120px; }
+    
+    .hero-banner { height: 220px; background: linear-gradient(rgba(0,0,0,0.5), #0d0d0d), url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=800&q=80'); background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; border-bottom: 2px solid var(--gold); }
+    .hero-banner h1 { color: var(--gold); margin: 0; font-size: 26px; }
+    .address { font-size: 12px; color: var(--gold); margin-top: 5px; }
+
+    .container { padding: 15px; max-width: 600px; margin: auto; }
+    .info-box { background: var(--card); padding: 15px; border-radius: 12px; border: 1px solid #333; margin-bottom: 20px; }
+    .info-box input, .info-box select { width: 100%; padding: 12px; margin: 8px 0; background: #222; border: 1px solid #444; color: #fff; border-radius: 8px; box-sizing: border-box; }
+    
+    .item-card { background: var(--card); border-radius: 15px; display: flex; padding: 12px; margin-bottom: 12px; border: 1px solid #333; align-items: center; }
+    .item-img { width: 70px; height: 70px; border-radius: 10px; object-fit: cover; }
+    .item-info { flex: 1; padding-left: 15px; }
+    .add-btn { background: var(--gold); color: #000; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+
+    .footer { position: fixed; bottom: 0; left: 0; width: 100%; background: #111; padding: 15px; border-top: 2px solid var(--gold); display: flex; flex-direction: column; align-items: center; }
+    .order-btn { background: var(--gold); width: 90%; padding: 15px; border-radius: 30px; border: none; font-weight: bold; cursor: pointer; font-size: 16px; box-shadow: 0 5px 15px rgba(201,168,76,0.3); }
+  </style>
+</head>
+<body>
+
+<div class="hero-banner">
+  <h1>Supreme IT Hotel</h1>
+  <p>স্বাদ ও আভিজাত্যের অনন্য সমন্বয়</p>
+  <span class="address">নারায়ণগঞ্জ, ঢাকা, বাংলাদেশ</span>
+</div>
+
+<div class="container">
+  <div class="info-box">
+    <h4 style="color:var(--gold); margin:0 0 10px;">অর্ডার ইনফরমেশন</h4>
+    <input type="text" id="cName" placeholder="আপনার নাম">
+    <input type="text" id="cPhone" placeholder="মোবাইল নম্বর">
+    <input type="number" id="cTable" placeholder="টেবিল নম্বর">
+    
+    <select id="pMethod">
+      <option value="Cash">Cash on Table</option>
+      <option value="bKash">bKash (বিকাশ)</option>
+      <option value="Nagad">Nagad (নগদ)</option>
+    </select>
+  </div>
+
+  <h3 style="color:var(--gold); border-left: 4px solid var(--gold); padding-left:10px;">মেনু আইটেম</h3>
+  <div id="menu-list">লোড হচ্ছে...</div>
+</div>
+
+<div class="footer">
+  <div id="cart-total" style="margin-bottom: 10px; font-weight: bold; color: var(--gold);">মোট বিল: ৳০</div>
+  <button class="order-btn" id="confirmOrder">🛒 অর্ডার কনফার্ম করুন</button>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+  import { getFirestore, collection, onSnapshot, query, orderBy, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAIBAoApGa4HXrdk15tezQl9WYeIIGEci4",
+    authDomain: "qr-menu-system-88ea9.firebaseapp.com",
+    projectId: "qr-menu-system-88ea9",
+    storageBucket: "qr-menu-system-88ea9.firebasestorage.app",
+    messagingSenderId: "1038515456469",
+    appId: "1:1038515456469:web:bfd7366988b7119ea9155c"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  let cart = [];
+
+  // মেনু ডাটা লোড (টেবিল ৩ অনুযায়ী)
+  onSnapshot(query(collection(db, "restaurants/demo-restaurant/menu"), orderBy("createdAt", "desc")), (snap) => {
+    const list = document.getElementById('menu-list');
+    list.innerHTML = '';
+    snap.forEach(d => {
+      const item = d.data();
+      const card = document.createElement('div');
+      card.className = 'item-card';
+      card.innerHTML = `
+        <img src="${item.image || 'https://via.placeholder.com/70'}" class="item-img">
+        <div class="item-info">
+          <span style="font-weight:bold; display:block;">${item.name}</span>
+          <span style="color:var(--gold);">৳${item.price}</span>
+        </div>
+        <button class="add-btn">Add</button>
+      `;
+      card.querySelector('.add-btn').onclick = () => {
+        cart.push(item);
+        const total = cart.reduce((s, i) => s + i.price, 0);
+        document.getElementById('cart-total').innerText = `মোট বিল: ৳${total}`;
+      };
+      list.appendChild(card);
+    });
+  });
+
+  // অর্ডার প্লেস (টেবিল ৪ ও ৫ এর ডাটা ফিক্সড)
+  document.getElementById('confirmOrder').onclick = async () => {
+    const name = document.getElementById('cName').value;
+    const phone = document.getElementById('cPhone').value;
+    const table = document.getElementById('cTable').value;
+    const method = document.getElementById('pMethod').value;
+
+    if(!name || !phone || !table) return alert("সবগুলো তথ্য পূরণ করুন!");
+    if(cart.length === 0) return alert("মেনু থেকে খাবার যোগ করুন");
+
+    const total = cart.reduce((s, i) => s + i.price, 0);
+
+    try {
+      await addDoc(collection(db, "orders"), {
+        customer_name: name,
+        customer_phone: phone,
+        table_number: table,
+        payment_method: method,
+        items: cart.map(i => i.name).join(", "),
+        total_amount: total,
+        order_status: "Processing", // ধাপে ধাপে আপডেট হবে
+        payment_status: method === "Cash" ? "Unpaid" : "Paid/Pending",
+        timestamp: serverTimestamp()
+      });
+      alert("অর্ডার সফল! আপনার খাবার তৈরি হচ্ছে।");
+      location.reload();
+    } catch(e) { alert("ব্যর্থ হয়েছে!"); }
+  };
+</script>
+</body>
+</html>
