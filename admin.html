@@ -3,72 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Supreme IT - Final Admin Control</title>
+    <title>Supreme IT Control Panel</title>
     <style>
         :root { --gold: #c9a84c; --bg: #0d0d0d; --card: #161616; --text: #f5f0e8; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
         
-        /* হোটেল ব্যানার সেকশন */
+        /* হোটেল ব্যানার */
         .admin-banner { background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80'); 
-            height: 150px; background-size: cover; background-position: center; border-radius: 15px; border: 1px solid var(--gold); 
-            display: flex; flex-direction: column; justify-content: center; align-items: center; margin-bottom: 25px; }
-        .admin-banner h1 { color: var(--gold); margin: 0; font-size: 24px; text-transform: uppercase; }
+            height: 120px; background-size: cover; background-position: center; border-radius: 10px; border: 1px solid var(--gold); 
+            display: flex; flex-direction: column; justify-content: center; align-items: center; margin-bottom: 20px; }
+        .admin-banner h1 { color: var(--gold); margin: 0; font-size: 20px; text-transform: uppercase; }
 
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; }
-        .tab-btn { padding: 10px 20px; border: 1px solid var(--gold); background: transparent; color: #fff; cursor: pointer; border-radius: 5px; }
+        /* ট্যাব স্টাইল */
+        .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+        .tab-btn { padding: 8px 15px; border: 1px solid var(--gold); background: transparent; color: #fff; cursor: pointer; border-radius: 5px; font-size: 14px; }
         .active-tab { background: var(--gold); color: #000; font-weight: bold; }
         
         .box { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid #333; margin-bottom: 20px; }
-        input, select { width: 100%; padding: 12px; margin: 8px 0; background: #222; border: 1px solid #444; color: #fff; border-radius: 8px; box-sizing: border-box; }
+        input { width: 100%; padding: 12px; margin: 8px 0; background: #222; border: 1px solid #444; color: #fff; border-radius: 8px; box-sizing: border-box; }
         .btn-gold { width: 100%; padding: 15px; background: var(--gold); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: #000; }
         
-        /* অর্ডার কার্ড স্টাইল */
-        .order-card { border-left: 5px solid var(--gold); padding: 15px; background: #1a1a1a; margin-bottom: 15px; position: relative; border-radius: 8px; }
-        .del-btn { background: #e74c3c; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; position: absolute; top: 15px; right: 15px; }
-        .print-btn { background: #fff; color: #000; padding: 5px 12px; border-radius: 5px; cursor: pointer; font-size: 13px; font-weight: bold; border: none; margin-top: 10px; }
+        /* মেনু লিস্ট এডিট/ডিলিট */
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #333; }
+        .edit-btn { background: var(--gold); color: black; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; margin-right: 5px; font-size: 12px; }
+        .del-btn { background: #e74c3c; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer; font-size: 12px; }
         
-        @media print { body * { visibility: hidden; } .print-section, .print-section * { visibility: visible; } .print-section { position: absolute; left: 0; top: 0; width: 100%; } }
+        .order-card { border-left: 5px solid var(--gold); padding: 15px; background: #1a1a1a; margin-bottom: 15px; border-radius: 8px; position: relative; }
     </style>
 </head>
 <body>
 
     <div class="admin-banner">
-        <h1>Supreme IT Control Panel</h1>
-        <p style="color:var(--gold); margin-top:5px;">অ্যাডমিন ড্যাশবোর্ড</p>
+        <h1>SUPREME IT CONTROL PANEL</h1>
+        <p style="color:var(--gold); font-size: 12px;">অ্যাডমিন ড্যাশবোর্ড</p>
     </div>
 
     <div class="tabs">
-        <button class="tab-btn active-tab" onclick="openPage('menu')">খাবার যোগ/এডিট</button>
-        <button class="tab-btn" onclick="openPage('orders')">অর্ডার ও বিল প্রিন্ট</button>
-        <button class="tab-btn" onclick="openPage('settings')">সেটিংস</button>
+        <button class="tab-btn active-tab" onclick="switchPage('menu-page')">খাবার যোগ/এডিট</button>
+        <button class="tab-btn" onclick="switchPage('order-page')">অর্ডার ও বিল প্রিন্ট</button>
+        <button class="tab-btn" onclick="switchPage('settings-page')">সেটিংস</button>
     </div>
 
-    <div id="menu" class="page">
+    <div id="menu-page" class="page">
         <div class="box">
-            <h3>আইটেম যোগ/এডিট করুন</h3>
-            <input type="hidden" id="editId">
-            <input type="text" id="iName" placeholder="খাবারের নাম">
-            <input type="number" id="iPrice" placeholder="মূল্য (৳)">
-            <input type="text" id="iImg" placeholder="ইমেজ লিঙ্ক">
-            <button class="btn-gold" id="saveItem">আইটেম সেভ করুন</button>
+            <h3 id="form-title">আইটেম যোগ/এডিট করুন</h3>
+            <input type="hidden" id="edit-id">
+            <input type="text" id="itemName" placeholder="খাবারের নাম">
+            <input type="number" id="itemPrice" placeholder="মূল্য (৳)">
+            <input type="text" id="itemImg" placeholder="ইমেজ লিঙ্ক">
+            <button class="btn-gold" id="save-btn">আইটেম সেভ করুন</button>
         </div>
-        <div class="box" id="menuList">লোড হচ্ছে...</div>
-    </div>
-
-    <div id="orders" class="page" style="display:none;">
-        <div id="orderList"></div>
-    </div>
-
-    <div id="settings" class="page" style="display:none;">
         <div class="box">
-            <h3>হোটেল সেটিংস</h3>
-            <p>হোটেলের নাম: Supreme IT Hotel</p>
-            <p>ঠিকানা: নারায়ণগঞ্জ, ঢাকা, বাংলাদেশ</p>
-            <button class="btn-gold" onclick="alert('সেটিংস আপডেট সফল!')">সেটিংস সেভ করুন</button>
+            <h3>বর্তমান মেনু</h3>
+            <div id="menu-container">লোড হচ্ছে...</div>
         </div>
     </div>
 
-    <div id="printSection" class="print-section" style="display:none; padding: 20px;"></div>
+    <div id="order-page" class="page" style="display:none;">
+        <div id="order-container"></div>
+    </div>
+
+    <div id="settings-page" class="page" style="display:none;">
+        <div class="box">
+            <h3>হোটেল সেটিংস এডিট করুন</h3>
+            <input type="text" value="Supreme IT Hotel" placeholder="হোটেলের নাম">
+            <input type="text" value="নারায়ণগঞ্জ, ঢাকা" placeholder="ঠিকানা">
+            <button class="btn-gold">সেটিংস আপডেট করুন</button>
+        </div>
+    </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
@@ -84,62 +86,84 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    window.openPage = (id) => {
+    // পেজ সুইচিং ফাংশন
+    window.switchPage = (pageId) => {
         document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
-        document.getElementById(id).style.display = 'block';
+        document.getElementById(pageId).style.display = 'block';
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active-tab'));
         event.target.classList.add('active-tab');
     };
 
-    // মেনু লিস্ট ও এডিট
+    // মেনু সেভ ও আপডেট লজিক
+    document.getElementById('save-btn').onclick = async () => {
+        const id = document.getElementById('edit-id').value;
+        const data = {
+            name: document.getElementById('itemName').value,
+            price: parseFloat(document.getElementById('itemPrice').value),
+            image: document.getElementById('itemImg').value,
+            createdAt: serverTimestamp()
+        };
+        if(id) await updateDoc(doc(db, "restaurants/demo-restaurant/menu", id), data);
+        else await addDoc(collection(db, "restaurants/demo-restaurant/menu"), data);
+        location.reload();
+    };
+
+    // মেনু লিস্ট রিড ও এডিট বাটন সেটআপ
     onSnapshot(query(collection(db, "restaurants/demo-restaurant/menu"), orderBy("createdAt", "desc")), (snap) => {
-        const list = document.getElementById('menuList'); list.innerHTML = '<h4>বর্তমান মেনু</h4>';
+        const container = document.getElementById('menu-container');
+        container.innerHTML = '';
         snap.forEach(d => {
-            const i = d.data();
-            list.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:10px; border-bottom:1px solid #333; padding-bottom:5px;">
-                <span>${i.name} - ৳${i.price}</span>
+            const item = d.data();
+            const div = document.createElement('div');
+            div.className = 'list-item';
+            div.innerHTML = `<span>${item.name} - ৳${item.price}</span>
                 <div>
-                    <button onclick="fillForm('${d.id}', '${i.name}', ${i.price}, '${i.image}')" style="background:var(--gold); border:none; border-radius:3px;">Edit</button>
-                    <button onclick="deleteItem('${d.id}', 'menu')" style="background:red; color:white; border:none; border-radius:3px;">Del</button>
+                    <button class="edit-btn" onclick="prepareEdit('${d.id}', '${item.name}', ${item.price}, '${item.image}')">Edit</button>
+                    <button class="del-btn" onclick="handleDelete('${d.id}', 'menu')">Del</button>
+                </div>`;
+            container.appendChild(div);
+        });
+    });
+
+    window.prepareEdit = (id, name, price, img) => {
+        document.getElementById('edit-id').value = id;
+        document.getElementById('itemName').value = name;
+        document.getElementById('itemPrice').value = price;
+        document.getElementById('itemImg').value = img;
+        document.getElementById('form-title').innerText = "আইটেম আপডেট করুন";
+        window.scrollTo(0,0);
+    };
+
+    // অর্ডার লিস্ট
+    onSnapshot(query(collection(db, "orders"), orderBy("timestamp", "desc")), (snap) => {
+        const container = document.getElementById('order-container');
+        container.innerHTML = '<h3>সাম্প্রটিক অর্ডারসমূহ</h3>';
+        snap.forEach(d => {
+            const o = d.data();
+            container.innerHTML += `<div class="order-card">
+                <b>টেবিল: ${o.table_number}</b> | ${o.customer_name}<br>
+                আইটেম: ${o.items} | বিল: ৳${o.total_amount}<br>
+                স্ট্যাটাস: <b>${o.order_status}</b>
+                <div style="margin-top:10px;">
+                    <select onchange="updateOrderStatus('${d.id}', this.value)">
+                        <option value="">স্ট্যাটাস পরিবর্তন</option>
+                        <option value="Processing">Processing</option>
+                        <option value="Serving">Serving</option>
+                        <option value="Done">Done</option>
+                    </select>
+                    <button class="del-btn" style="float:right" onclick="handleDelete('${d.id}', 'orders')">Delete Order</button>
                 </div>
             </div>`;
         });
     });
 
-    // অর্ডার লিস্ট উইথ Processing, Serving, Done
-    onSnapshot(query(collection(db, "orders"), orderBy("timestamp", "desc")), (snap) => {
-        const oList = document.getElementById('orderList'); oList.innerHTML = '<h3>সাম্প্রতিক অর্ডারসমূহ</h3>';
-        snap.forEach(d => {
-            const o = d.data();
-            oList.innerHTML += `
-                <div class="order-card">
-                    <button class="del-btn" onclick="deleteItem('${d.id}', 'orders')">Delete</button>
-                    <b>টেবিল: ${o.table_number || 'N/A'}</b> | কাস্টমার: ${o.customer_name || 'Guest'}<br>
-                    খাবার: ${o.items} | বিল: ৳${o.total_amount || 0}<br>
-                    <button class="print-btn" onclick="printBill('${o.customer_name}', '${o.table_number}', '${o.items}', ${o.total_amount})">🖨️ বিল প্রিন্ট</button>
-                    <select onchange="updateStatus('${d.id}', this.value)" style="width:auto; margin-left:10px;">
-                        <option value="">স্ট্যাটাস: ${o.order_status}</option>
-                        <option value="Processing">Processing</option>
-                        <option value="Serving">Serving</option>
-                        <option value="Done">Done</option>
-                    </select>
-                </div>`;
-        });
-    });
+    window.updateOrderStatus = async (id, s) => { if(s) await updateDoc(doc(db, "orders", id), { order_status: s }); };
 
-    window.updateStatus = async (id, s) => { if(s) await updateDoc(doc(db, "orders", id), { order_status: s }); };
-    
-    window.deleteItem = async (id, type) => { 
-        if(confirm("আপনি কি নিশ্চিতভাবে এটি ডিলিট করতে চান?")) {
+    window.handleDelete = async (id, type) => {
+        if(confirm("আপনি কি নিশ্চিত?")) {
             const path = type === 'menu' ? "restaurants/demo-restaurant/menu" : "orders";
             await deleteDoc(doc(db, path, id));
         }
-    };
-
-    window.printBill = (name, table, items, total) => {
-        const p = document.getElementById('printSection');
-        p.innerHTML = `<center><h2>Supreme IT Hotel</h2><hr>কাস্টমার: ${name}<br>টেবিল: ${table}<br>আইটেম: ${items}<br><b>মোট: ৳${total}</b><hr>ধন্যবাদ!</center>`;
-        window.print();
     };
 </script>
 </body>
