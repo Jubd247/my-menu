@@ -3,99 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Supreme IT - Pro Admin Panel</title>
+    <title>Supreme IT - Master Admin</title>
     <style>
         :root { --gold: #c9a84c; --bg: #0d0d0d; --card: #161616; --text: #f5f0e8; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; }
         
-        /* প্রফেশনাল ব্যানার */
         .admin-banner { background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80'); 
             height: 120px; background-size: cover; background-position: center; border-radius: 12px; border: 1px solid var(--gold); 
             display: flex; flex-direction: column; justify-content: center; align-items: center; margin-bottom: 20px; }
-        .admin-banner h1 { color: var(--gold); margin: 0; font-size: 22px; text-transform: uppercase; letter-spacing: 1px; }
+        .admin-banner h1 { color: var(--gold); margin: 0; font-size: 22px; text-transform: uppercase; }
 
-        /* অ্যানালিটিক্স কার্ড সেকশন */
+        /* অ্যানালিটিক্স */
         .analytics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 25px; }
         .stat-card { background: var(--card); padding: 15px; border-radius: 10px; border: 1px solid #333; text-align: center; border-bottom: 3px solid var(--gold); }
-        .stat-card h3 { font-size: 14px; margin: 0; color: #888; }
         .stat-card p { font-size: 20px; font-weight: bold; margin: 5px 0 0 0; color: var(--gold); }
 
-        /* ট্যাব কন্ট্রোল */
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; }
-        .tab-btn { padding: 10px 18px; border: 1px solid var(--gold); background: transparent; color: #fff; cursor: pointer; border-radius: 6px; white-space: nowrap; transition: 0.3s; }
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; overflow-x: auto; }
+        .tab-btn { padding: 10px 18px; border: 1px solid var(--gold); background: transparent; color: #fff; cursor: pointer; border-radius: 6px; white-space: nowrap; }
         .active-tab { background: var(--gold); color: #000; font-weight: bold; }
         
         .box { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid #333; margin-bottom: 20px; }
         input { width: 100%; padding: 12px; margin: 8px 0; background: #222; border: 1px solid #444; color: #fff; border-radius: 8px; box-sizing: border-box; }
-        .btn-gold { width: 100%; padding: 15px; background: var(--gold); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: #000; font-size: 16px; }
+        .btn-gold { width: 100%; padding: 15px; background: var(--gold); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; color: #000; }
         
-        /* মেনু লিস্ট স্টাইল */
-        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #333; transition: 0.2s; }
-        .list-item:hover { background: #1a1a1a; }
-        .action-btns { display: flex; gap: 8px; }
-        .edit-btn { background: var(--gold); color: #000; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; }
-        .del-btn { background: #e74c3c; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        .list-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #333; }
+        .item-img { width: 45px; height: 45px; border-radius: 5px; object-fit: cover; margin-right: 10px; border: 1px solid #444; }
         
-        /* অর্ডার কার্ড ও প্রিন্ট বাটন */
-        .order-card { border-left: 5px solid var(--gold); padding: 18px; background: #1a1a1a; margin-bottom: 15px; border-radius: 8px; position: relative; }
-        .print-btn { background: #fff; color: #000; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 13px; font-weight: bold; border: none; margin-top: 12px; display: inline-flex; align-items: center; gap: 5px; }
-        .status-select { background: #222; color: #fff; border: 1px solid var(--gold); padding: 6px; border-radius: 5px; margin-left: 10px; }
+        .order-card { border-left: 5px solid var(--gold); padding: 18px; background: #1a1a1a; margin-bottom: 15px; border-radius: 8px; }
+        .print-btn { background: #fff; color: #000; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 13px; font-weight: bold; border: none; margin-top: 10px; }
 
-        @media print { body * { visibility: hidden; } .print-area, .print-area * { visibility: visible; } .print-area { position: absolute; left: 0; top: 0; width: 100%; color: black !important; background: white !important; } }
+        @media print { body * { visibility: hidden; } .print-area, .print-area * { visibility: visible; } .print-area { position: absolute; left: 0; top: 0; width: 100%; } }
     </style>
 </head>
 <body>
 
     <div class="admin-banner">
-        <h1>SUPREME IT CONTROL PANEL</h1>
-        <p style="color:var(--gold); font-size: 13px; margin-top: 5px;">স্মার্ট হোটেল ম্যানেজমেন্ট সলিউশন</p>
+        <h1>Hazi Biriyani হাজী বিরিয়ানী</h1>
     </div>
 
     <div class="analytics-grid">
-        <div class="stat-card"><h3>মোট অর্ডার</h3><p id="stat-total">০</p></div>
-        <div class="stat-card"><h3>মোট বিক্রি</h3><p id="stat-sales">৳০</p></div>
-        <div class="stat-card"><h3>পেন্ডিং</h3><p id="stat-pending">০</p></div>
+        <div class="stat-card"><h3>মোট অর্ডার</h3><p id="total-ord">০</p></div>
+        <div class="stat-card"><h3>মোট বিক্রি</h3><p id="total-sales">৳০</p></div>
     </div>
 
     <div class="tabs">
-        <button class="tab-btn active-tab" onclick="changeTab('menu-page')">খাবার যোগ/এডিট</button>
-        <button class="tab-btn" onclick="changeTab('order-page')">অর্ডার ও বিল প্রিন্ট</button>
-        <button class="tab-btn" onclick="changeTab('settings-page')">সেটিংস</button>
+        <button class="tab-btn active-tab" onclick="openTab('menu-tab')">খাবার যোগ/এডিট</button>
+        <button class="tab-btn" onclick="openTab('order-tab')">অর্ডার ও বিল প্রিন্ট</button>
+        <button class="tab-btn" onclick="openTab('settings-tab')">সেটিংস</button>
     </div>
 
-    <div id="menu-page" class="tab-content">
+    <div id="menu-tab" class="content-tab">
         <div class="box">
-            <h3 id="menu-form-title">নতুন আইটেম যোগ করুন</h3>
+            <h3 id="form-title">নতুন আইটেম যোগ করুন</h3>
             <input type="hidden" id="edit-id">
             <input type="text" id="nameInp" placeholder="খাবারের নাম">
             <input type="number" id="priceInp" placeholder="মূল্য (৳)">
-            <input type="text" id="imgInp" placeholder="ইমেজ লিঙ্ক (ঐচ্ছিক)">
-            <button class="btn-gold" id="save-menu-btn">আইটেম সেভ করুন</button>
+            <input type="text" id="imgInp" placeholder="ইমেজ লিঙ্ক (ImgBB লিঙ্ক দিন)">
+            <button class="btn-gold" id="save-item">আইটেম সেভ করুন</button>
         </div>
         <div class="box">
             <h3>বর্তমান মেনু তালিকা</h3>
-            <div id="menu-list-container">লোড হচ্ছে...</div>
+            <div id="menu-list">লোড হচ্ছে...</div>
         </div>
     </div>
 
-    <div id="order-page" class="tab-content" style="display:none;">
-        <div id="order-list-container"></div>
+    <div id="order-tab" class="content-tab" style="display:none;">
+        <div id="order-list"></div>
     </div>
 
-    <div id="settings-page" class="tab-content" style="display:none;">
+    <div id="settings-tab" class="content-tab" style="display:none;">
         <div class="box">
-            <h3>হোটেল প্রোফাইল সেটিংস</h3>
-            <input type="text" value="Supreme IT Hotel" id="hotelName">
-            <input type="text" value="নারায়ণগঞ্জ, ঢাকা" id="hotelAddr">
-            <button class="btn-gold" onclick="alert('সেটিংস আপডেট হয়েছে!')">সেভ সেটিংস</button>
+            <h3>হোটেল ও পেমেন্ট সেটিংস</h3>
+            <label>হোটেলের নাম:</label>
+            <input type="text" id="setHotelName" value="Supreme IT Hotel">
+            <label>বিকাশ/নগদ নম্বর:</label>
+            <input type="text" id="setPaymentNo" placeholder="পেমেন্ট নম্বর দিন">
+            <label>পেমেন্ট QR কোড লিঙ্ক:</label>
+            <input type="text" id="setQrLink" placeholder="QR ইমেজের সরাসরি লিঙ্ক">
+            <button class="btn-gold" id="save-settings">সেটিংস সেভ করুন</button>
         </div>
     </div>
 
-    <div id="billPrintArea" class="print-area" style="display:none; padding: 30px; font-family: monospace; border: 1px dashed #000;"></div>
+    <div id="printArea" class="print-area" style="display:none; padding: 20px; font-family: monospace; background: white; color: black;"></div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, updateDoc, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, updateDoc, deleteDoc, doc, serverTimestamp, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyAIBAoApGa4HXrdk15tezQl9WYeIIGEci4",
@@ -107,114 +100,86 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    window.changeTab = (id) => {
-        document.querySelectorAll('.tab-content').forEach(p => p.style.display = 'none');
+    window.openTab = (id) => {
+        document.querySelectorAll('.content-tab').forEach(t => t.style.display = 'none');
         document.getElementById(id).style.display = 'block';
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active-tab'));
         event.target.classList.add('active-tab');
     };
 
-    // মেনু সেভ ও এডিট ফিক্সড
-    document.getElementById('save-menu-btn').onclick = async () => {
-        const id = document.getElementById('edit-id').value;
-        const payload = {
-            name: document.getElementById('nameInp').value,
-            price: parseFloat(document.getElementById('priceInp').value),
-            image: document.getElementById('imgInp').value,
-            updatedAt: serverTimestamp()
-        };
-        if(id) {
-            await updateDoc(doc(db, "restaurants/demo-restaurant/menu", id), payload);
-            alert("আপডেট সফল!");
-        } else {
-            payload.createdAt = serverTimestamp();
-            await addDoc(collection(db, "restaurants/demo-restaurant/menu"), payload);
-            alert("যোগ করা হয়েছে!");
-        }
-        location.reload();
-    };
-
+    // ১. ইমেজসহ মেনু লোড ও এডিট
     onSnapshot(query(collection(db, "restaurants/demo-restaurant/menu"), orderBy("createdAt", "desc")), (snap) => {
-        const cont = document.getElementById('menu-list-container');
-        cont.innerHTML = '';
+        const list = document.getElementById('menu-list'); list.innerHTML = '';
         snap.forEach(d => {
-            const item = d.data();
-            cont.innerHTML += `<div class="list-item">
-                <span><b>${item.name}</b> - ৳${item.price}</span>
-                <div class="action-btns">
-                    <button class="edit-btn" onclick="startEdit('${d.id}', '${item.name}', ${item.price}, '${item.image}')">Edit</button>
-                    <button class="del-btn" onclick="deleteObj('${d.id}', 'menu')">Del</button>
+            const i = d.data();
+            list.innerHTML += `<div class="list-item">
+                <div style="display:flex; align-items:center;">
+                    <img src="${i.image || 'https://via.placeholder.com/50'}" class="item-img">
+                    <span><b>${i.name}</b> - ৳${i.price}</span>
+                </div>
+                <div>
+                    <button class="tab-btn" style="padding:5px 10px; font-size:12px;" onclick="editItem('${d.id}', '${i.name}', ${i.price}, '${i.image}')">Edit</button>
+                    <button class="tab-btn" style="padding:5px 10px; font-size:12px; background:red;" onclick="deleteItem('${d.id}', 'menu')">Del</button>
                 </div>
             </div>`;
         });
     });
 
-    window.startEdit = (id, n, p, i) => {
+    window.editItem = (id, n, p, img) => {
         document.getElementById('edit-id').value = id;
         document.getElementById('nameInp').value = n;
         document.getElementById('priceInp').value = p;
-        document.getElementById('imgInp').value = i;
-        document.getElementById('menu-form-title').innerText = "আইটেমটি এডিট করুন ✍️";
-        window.scrollTo({top: 0, behavior: 'smooth'});
+        document.getElementById('imgInp').value = img;
+        document.getElementById('form-title').innerText = "আইটেমটি এডিট করুন ✍️";
+        window.scrollTo(0,0);
     };
 
-    // অর্ডার, অ্যানালিটিক্স ও প্রিন্ট
+    document.getElementById('save-item').onclick = async () => {
+        const id = document.getElementById('edit-id').value;
+        const data = { name: document.getElementById('nameInp').value, price: parseFloat(document.getElementById('priceInp').value), image: document.getElementById('imgInp').value };
+        if(id) await updateDoc(doc(db, "restaurants/demo-restaurant/menu", id), data);
+        else await addDoc(collection(db, "restaurants/demo-restaurant/menu"), {...data, createdAt: serverTimestamp()});
+        location.reload();
+    };
+
+    // ২. সেটিংস সেভ লজিক (পেমেন্ট নম্বর ও কিউআর)
+    document.getElementById('save-settings').onclick = async () => {
+        await setDoc(doc(db, "settings", "hotel_info"), {
+            name: document.getElementById('setHotelName').value,
+            payment_no: document.getElementById('setPaymentNo').value,
+            qr_link: document.getElementById('setQrLink').value
+        });
+        alert("সেটিংস সেভ হয়েছে!");
+    };
+
+    // ৩. অর্ডার ও প্রিন্ট
     onSnapshot(query(collection(db, "orders"), orderBy("timestamp", "desc")), (snap) => {
-        const oCont = document.getElementById('order-list-container');
-        oCont.innerHTML = '<h3>সাম্প্রতিক অর্ডারসমূহ</h3>';
-        let total = 0, sales = 0, pending = 0;
-
-        snap.forEach(d => {
-            const o = d.data();
-            total++;
-            sales += (o.total_amount || 0);
-            if(o.order_status !== 'Done') pending++;
-
+        const oCont = document.getElementById('order-list'); oCont.innerHTML = '<h3>অর্ডারসমূহ</h3>';
+        let s = 0; snap.forEach(d => {
+            const o = d.data(); s += (o.total_amount || 0);
             oCont.innerHTML += `<div class="order-card">
-                <b>টেবিল: ${o.table_number || 'N/A'}</b> | কাস্টমার: ${o.customer_name || 'Guest'}<br>
-                খাবার: ${o.items} | বিল: <b>৳${o.total_amount || 0}</b><br>
-                <button class="print-btn" onclick="runPrint('${o.customer_name}', '${o.table_number}', '${o.items}', ${o.total_amount})">🖨️ প্রিন্ট বিল</button>
-                <select class="status-select" onchange="updateStat('${d.id}', this.value)">
+                <b>টেবিল: ${o.table_number}</b> | ${o.customer_name}<br>
+                আইটেম: ${o.items} | বিল: ৳${o.total_amount}<br>
+                <button class="print-btn" onclick="printBill('${o.customer_name}', '${o.table_number}', '${o.items}', ${o.total_amount})">🖨️ প্রিন্ট বিল</button>
+                <select onchange="updateStat('${d.id}', this.value)" style="margin-left:10px;">
                     <option value="">${o.order_status}</option>
                     <option value="Processing">Processing</option>
                     <option value="Serving">Serving</option>
                     <option value="Done">Done</option>
                 </select>
-                <button class="del-btn" style="float:right" onclick="deleteObj('${d.id}', 'orders')">Delete</button>
+                <button onclick="deleteItem('${d.id}', 'orders')" style="float:right; border:none; background:none; color:red; cursor:pointer;">Delete</button>
             </div>`;
         });
-        document.getElementById('stat-total').innerText = total;
-        document.getElementById('stat-sales').innerText = '৳' + sales;
-        document.getElementById('stat-pending').innerText = pending;
+        document.getElementById('total-ord').innerText = snap.size;
+        document.getElementById('total-sales').innerText = '৳' + s;
     });
 
     window.updateStat = async (id, s) => { if(s) await updateDoc(doc(db, "orders", id), { order_status: s }); };
+    window.deleteItem = async (id, p) => { if(confirm("নিশ্চিত?")) await deleteDoc(doc(db, (p==='menu'?"restaurants/demo-restaurant/menu":"orders"), id)); };
 
-    window.deleteObj = async (id, type) => {
-        if(confirm("আপনি কি নিশ্চিত?")) {
-            const p = type === 'menu' ? "restaurants/demo-restaurant/menu" : "orders";
-            await deleteDoc(doc(db, p, id));
-        }
-    };
-
-    // সঠিক বিল প্রিন্ট ফাংশন
-    window.runPrint = (name, table, items, total) => {
-        const p = document.getElementById('billPrintArea');
-        p.innerHTML = `
-            <div style="text-align:center">
-                <h2>${document.getElementById('hotelName').value}</h2>
-                <p>${document.getElementById('hotelAddr').value}</p>
-                <hr>
-            </div>
-            <p><b>কাস্টমার:</b> ${name || 'Guest'}</p>
-            <p><b>টেবিল নং:</b> ${table}</p>
-            <p><b>তারিখ:</b> ${new Date().toLocaleString()}</p>
-            <hr>
-            <p><b>অর্ডারকৃত খাবার:</b><br>${items}</p>
-            <hr>
-            <h3 style="text-align:right">মোট বিল: ৳${total}</h3>
-            <br><center>ধন্যবাদ, আবার আসবেন!</center>
-        `;
+    window.printBill = (n, t, i, tot) => {
+        const area = document.getElementById('printArea');
+        area.innerHTML = `<center><h2>Supreme IT Hotel</h2><hr>কাস্টমার: ${n}<br>টেবিল: ${t}<br>আইটেম: ${i}<br><b>মোট বিল: ৳${tot}</b><hr>ধন্যবাদ!</center>`;
         window.print();
     };
 </script>
