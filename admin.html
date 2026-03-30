@@ -169,32 +169,36 @@
 
     window.updatePay = async (id, val) => { if(val) await updateDoc(doc(db, "orders", id), { payment_method: val }); };
 
-    // ৩. প্রিন্ট ডিটেলস ফিক্স (সাদা পেজ সমাধান)
-    window.runPrint = (name, table, items, total, pay) => {
-        const area = document.getElementById('printArea');
-        const hotel = document.getElementById('setHotelName').value;
-        area.innerHTML = `
-            <div style="text-align:center;">
-                <h2 style="margin:0;">${hotel}</h2>
-                <p style="font-size:12px; margin:5px;">মানসম্মত খাবারের নির্ভরযোগ্য প্রতিষ্ঠান</p>
-                <hr>
-                <div style="text-align:left; font-size:14px;">
-                    <p><b>কাস্টমার:</b> ${name || 'Guest'}</p>
-                    <p><b>টেবিল:</b> ${table}</p>
-                    <p><b>পেমেন্ট:</b> ${pay}</p>
-                    <p><b>তারিখ:</b> ${new Date().toLocaleString()}</p>
-                    <hr>
-                    <p><b>অর্ডার ডিটেলস:</b><br>${items}</p>
-                    <hr>
-                    <h3 style="text-align:right; margin:10px 0;">মোট বিল: ৳${total}</h3>
-                </div>
-                <p style="font-size:12px; border-top:1px dashed #000; padding-top:10px;">ধন্যবাদ, আবার আসবেন!</p>
+    // সংশোধিত প্রিন্ট ফাংশন (এমাউন্ট ফিক্সড)
+window.runPrint = (name, table, items, total, pay) => {
+    const area = document.getElementById('printArea');
+    const hotel = document.getElementById('setHotelName').value;
+    
+    // এমাউন্টটি সংখ্যা কিনা নিশ্চিত করা
+    const formattedTotal = Number(total).toLocaleString('bn-BD'); 
+
+    area.innerHTML = `
+        <div style="text-align:center; padding: 10px; color: black;">
+            <h2 style="margin:0; font-size: 22px;">${hotel}</h2>
+            <p style="font-size:12px; margin:5px;">মানসম্মত খাবারের নির্ভরযোগ্য প্রতিষ্ঠান</p>
+            <hr style="border: 0.5px solid #000;">
+            <div style="text-align:left; font-size:14px; line-height: 1.6;">
+                <p><b>কাস্টমার:</b> ${name || 'সম্মানিত গ্রাহক'}</p>
+                <p><b>টেবিল নং:</b> ${table}</p>
+                <p><b>পেমেন্ট:</b> ${pay}</p>
+                <p><b>সময়:</b> ${new Date().toLocaleString('bn-BD')}</p>
+                <hr style="border: 0.5px dashed #000;">
+                <p><b>অর্ডারকৃত খাবার:</b><br>${items}</p>
+                <hr style="border: 0.5px solid #000;">
+                <h3 style="text-align:right; margin:10px 0; font-size: 20px;">মোট বিল: ৳${formattedTotal}</h3>
             </div>
-        `;
-        area.style.display = 'block';
-        window.print();
-        setTimeout(() => { area.style.display = 'none'; }, 1000);
-    };
+            <p style="font-size:12px; border-top:1px dashed #000; padding-top:10px; margin-top: 20px;">ধন্যবাদ, আবার আসবেন!</p>
+        </div>
+    `;
+    area.style.display = 'block';
+    window.print();
+    setTimeout(() => { area.style.display = 'none'; }, 1000);
+};
 
     // ৪. সেটিংস সেভ ফিক্স
     document.getElementById('save-settings').onclick = async () => {
