@@ -106,6 +106,24 @@
                 const o = d.data(); 
                 const amt = Number(o.total_amount) || 0;
                 if(o.status === 'Done') sales += amt;
+                // onSnapshot এর ভেতর এই অংশটুকু আপডেট কর
+let sales = 0; 
+let cashSales = 0; 
+let digitalSales = 0;
+
+snap.forEach(d => {
+    const o = d.data();
+    const amt = Number(o.total_amount) || 0;
+    if (o.status === 'Done') {
+        sales += amt;
+        if (o.payment_method === 'Cash') cashSales += amt;
+        else digitalSales += amt;
+    }
+    // ... বাকি লিস্ট রেন্ডার কোড ...
+});
+
+document.getElementById('sales-val').innerText = sales;
+// তুই চাইলে আলাদা দুটা স্প্যান বানিয়ে সেখানে cashSales এবং digitalSales দেখাতে পারিস
                 
                 list.innerHTML += `<div class="bg-[#222] p-5 rounded-2xl border-l-4 ${o.status==='Pending'?'border-yellow-500':'border-green-500'} shadow-lg">
                     <div class="flex justify-between text-[10px] text-gray-500 font-bold mb-3 uppercase tracking-widest">
