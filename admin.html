@@ -6,193 +6,133 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { background: #0d0d0d; color: #f5f0e8; }
-        .stat-card { background: #161616; border-bottom: 4px solid #c9a84c; }
-        @media print { body * { visibility: hidden; } #printArea, #printArea * { visibility: visible; } #printArea { position: absolute; left: 0; top: 0; width: 100%; display: block !important; color: black !important; } }
+        body { background: #0d0d0d; color: #eee; font-family: sans-serif; }
+        .card { background: #161616; border: 1px solid #222; }
+        @media print { body * { visibility: hidden; } #p-area, #p-area * { visibility: visible; } #p-area { position: absolute; left: 0; top: 0; width: 100%; color: #000 !important; } }
     </style>
-    <div id="login-screen" class="fixed inset-0 bg-black z-[100] flex items-center justify-center p-6">
-    <div class="bg-[#161616] p-8 rounded-2xl border border-[#c9a84c] w-full max-w-sm text-center">
-        <h2 class="text-2xl font-bold mb-6 gold-text">ADMIN ACCESS</h2>
-        <input type="password" id="adminPass" placeholder="পাসওয়ার্ড দিন" class="w-full p-3 bg-black border border-gray-700 rounded-lg text-white mb-4 text-center">
-        <button onclick="checkPass()" class="w-full gold-bg text-black font-bold py-3 rounded-lg">লগইন করুন</button>
-        <p id="err" class="text-red-500 text-xs mt-3 hidden">ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।</p>
-    </div>
-</div>
-
-<script>
-    // আপাতত পাসওয়ার্ড '1234' সেট করা আছে, তুই চাইলে পরে পাল্টে নিস
-    function checkPass() {
-        const p = document.getElementById('adminPass').value;
-        if(p === '1234') { 
-            document.getElementById('login-screen').style.display = 'none';
-        } else {
-            document.getElementById('err').classList.remove('hidden');
-        }
-    }
-</script>
 </head>
-<body class="p-6">
+<body class="p-4 md:p-8">
+
+    <div id="login" class="fixed inset-0 bg-black z-[200] flex items-center justify-center p-6">
+        <div class="bg-[#161616] p-8 rounded-3xl border border-[#c9a84c] w-full max-w-sm text-center shadow-2xl">
+            <h2 class="text-2xl font-bold text-[#c9a84c] mb-6 tracking-widest">ADMIN LOGIN</h2>
+            <input type="password" id="passInp" placeholder="Password" class="w-full p-4 bg-black border border-gray-800 rounded-xl mb-4 text-center text-white outline-none">
+            <button onclick="checkPass()" class="w-full bg-[#c9a84c] text-black font-bold py-4 rounded-xl active:scale-95 transition">লগইন</button>
+        </div>
+    </div>
 
     <div class="max-w-6xl mx-auto">
-        <h1 class="text-3xl font-bold mb-8 text-[#c9a84c] border-b border-gray-800 pb-4 text-center">SUPREME IT CONTROL PANEL</h1>
+        <h1 class="text-2xl font-bold text-[#c9a84c] mb-8 border-b border-gray-900 pb-4">SUPREME IT - CONTROL PANEL</h1>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="stat-card p-6 rounded-xl shadow-lg text-center">
-                <h3 class="text-gray-400 uppercase text-xs mb-2">আজকের মোট বিক্রি</h3>
-                <p class="text-3xl font-bold text-[#c9a84c]">৳ <span id="sales-amt">0</span></p>
-                <p class="text-green-500 text-xs mt-2">↑ ১২% গতদিনের তুলনায়</p>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <div class="card p-6 rounded-2xl text-center">
+                <p class="text-xs text-gray-500 uppercase">Today's Sales</p>
+                <p class="text-4xl font-bold text-[#c9a84c] mt-2">৳ <span id="sales-val">0</span></p>
             </div>
-            <div class="stat-card p-6 rounded-xl shadow-lg text-center">
-                <h3 class="text-gray-400 uppercase text-xs mb-2">মোট অর্ডার</h3>
-                <p class="text-3xl font-bold" id="order-count">0</p>
+            <div class="card p-6 rounded-2xl text-center">
+                <p class="text-xs text-gray-500 uppercase">Orders</p>
+                <p class="text-4xl font-bold mt-2" id="order-val">0</p>
             </div>
-            <div class="stat-card p-6 rounded-xl shadow-lg flex items-center justify-center">
-                <canvas id="salesChart" height="100"></canvas>
-            </div>
+            <div class="card p-4 rounded-2xl"><canvas id="salesChart" height="100"></canvas></div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div class="bg-[#161616] p-6 rounded-xl border border-gray-800">
-                <h2 class="text-xl font-bold mb-4 flex items-center gap-2"><i class="fas fa-bell text-red-500"></i> লাইভ অর্ডার</h2>
-                <div id="order-list" class="space-y-4 max-h-[600px] overflow-y-auto pr-2"></div>
+            <div class="card p-6 rounded-2xl">
+                <h2 class="text-xl font-bold mb-4">Live Orders</h2>
+                <div id="order-list" class="space-y-4 max-h-[500px] overflow-y-auto pr-2"></div>
             </div>
 
-            <div class="bg-[#161616] p-6 rounded-xl border border-gray-800">
-                <h2 class="text-xl font-bold mb-4">মেনু ও স্টক কন্ট্রোল</h2>
-                <div class="grid grid-cols-2 gap-2 mb-4">
-                    <input id="nInp" placeholder="নাম" class="bg-[#222] p-2 rounded border border-gray-700">
-                    <input id="pInp" type="number" placeholder="দাম" class="bg-[#222] p-2 rounded border border-gray-700">
-                    <input id="iInp" placeholder="ইমেজ ইউআরএল" class="bg-[#222] p-2 rounded border border-gray-700 col-span-2">
-                    <button onclick="addItem()" class="bg-[#c9a84c] text-black font-bold p-2 rounded col-span-2">নতুন আইটেম যোগ করুন</button>
+            <div class="card p-6 rounded-2xl">
+                <h2 class="text-xl font-bold mb-4">Menu & Stock</h2>
+                <div class="grid grid-cols-2 gap-3 mb-6">
+                    <input id="nInp" placeholder="খাবারের নাম" class="bg-[#222] p-3 rounded-xl border border-gray-800 text-sm">
+                    <input id="pInp" type="number" placeholder="দাম" class="bg-[#222] p-3 rounded-xl border border-gray-800 text-sm">
+                    <input id="iInp" placeholder="ইমেজ লিঙ্ক" class="bg-[#222] p-3 rounded-xl border border-gray-800 text-sm col-span-2">
+                    <button onclick="addItem()" class="bg-[#c9a84c] text-black font-bold p-3 rounded-xl col-span-2">নতুন খাবার যোগ করুন</button>
                 </div>
-                <div id="admin-menu-list" class="space-y-2"></div>
+                <div id="menu-list" class="space-y-2"></div>
             </div>
         </div>
     </div>
 
-    <div id="printArea" class="hidden"></div>
+    <div id="p-area" class="hidden font-mono p-4 w-[300px]"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, query, orderBy, updateDoc, deleteDoc, doc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, query, orderBy, updateDoc, doc, addDoc, serverTimestamp, where } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
 
         const firebaseConfig = { apiKey: "AIzaSyAIBAoApGa4HXrdk15tezQl9WYeIIGEci4", authDomain: "qr-menu-system-88ea9.firebaseapp.com", projectId: "qr-menu-system-88ea9", appId: "1:1038515456469:web:bfd7366988b7119ea9155c" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // লাইভ অর্ডার আপডেট
+        window.checkPass = () => { if(document.getElementById('passInp').value === '1234') document.getElementById('login').style.display='none'; };
+
+        // গ্রাফ লজিক
+        const ctx = document.getElementById('salesChart').getContext('2d');
+        let myChart = new Chart(ctx, { type: 'line', data: { labels: ['S','S','M','T','W','T','F'], datasets: [{ label: 'Sales', data: [0,0,0,0,0,0,0], borderColor: '#c9a84c', tension: 0.4, fill: true, backgroundColor: 'rgba(201,168,76,0.1)' }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { display: false } } } });
+
+        // লাইভ ডাটা
         onSnapshot(query(collection(db, "orders"), orderBy("timestamp", "desc")), (snap) => {
-            const list = document.getElementById('order-list'); list.innerHTML = '';
-            let sales = 0;
+            let sales = 0; const list = document.getElementById('order-list'); list.innerHTML = '';
             snap.forEach(d => {
-                const o = d.data();
-                if(o.status === "Done") sales += o.total_amount;
-                list.innerHTML += `
-                    <div class="bg-[#222] p-4 rounded-lg border-l-4 ${o.status==='Pending'?'border-yellow-500':'border-green-500'}">
-                        <div class="flex justify-between">
-                            <b>টেবিল ${o.table_number}: ${o.customer_name}</b>
-                            <span class="text-[10px] text-gray-500">${o.customer_phone}</span>
-                        </div>
-                        <p class="text-sm my-2 text-gray-300">${o.items}</p>
-                        <div class="flex gap-2">
-                            <select onchange="updateStatus('${d.id}', this.value)" class="bg-black text-xs p-1 rounded border border-gray-700">
-                                <option value="Pending" ${o.status==='Pending'?'selected':''}>Pending</option>
-                                <option value="Cooking" ${o.status==='Cooking'?'selected':''}>Cooking</option>
-                                <option value="Served" ${o.status==='Served'?'selected':''}>Served</option>
-                                <option value="Done" ${o.status==='Done'?'selected':''}>Done</option>
-                                <option value="Cancelled" ${o.status==='Cancelled'?'selected':''}>Cancel</option>
-                            </select>
-                            <button onclick="printOrder('${d.id}')" class="bg-blue-600 px-3 py-1 rounded text-xs">Print</button>
-                        </div>
-                    </div>`;
+                const o = d.data(); if(o.status === 'Done') sales += Number(o.total_amount);
+                list.innerHTML += `<div class="bg-[#222] p-4 rounded-xl border-l-4 ${o.status==='Pending'?'border-yellow-500':'border-green-500'}">
+                    <div class="flex justify-between text-xs mb-2 text-gray-400 font-bold"><span>টেবিল ${o.table_number}</span> <span>${o.customer_name}</span></div>
+                    <p class="text-sm font-bold gold-text">${o.items}</p>
+                    <div class="flex gap-2 mt-4 items-center">
+                        <select onchange="updateStat('${d.id}', this.value)" class="bg-black text-[10px] p-2 rounded border border-gray-800">
+                            <option value="Pending" ${o.status==='Pending'?'selected':''}>Pending</option>
+                            <option value="Cooking" ${o.status==='Cooking'?'selected':''}>Cooking</option>
+                            <option value="Served" ${o.status==='Served'?'selected':''}>Served</option>
+                            <option value="Done" ${o.status==='Done'?'selected':''}>Done</option>
+                            <option value="Cancelled" ${o.status==='Cancelled'?'selected':''}>Cancel</option>
+                        </select>
+                        <button onclick="printBill('${d.id}')" class="bg-blue-600 text-white px-4 py-1 rounded-lg text-[10px]">Print Bill</button>
+                        <span class="ml-auto font-bold">৳${o.total_amount}</span>
+                    </div>
+                </div>`;
             });
-            document.getElementById('sales-amt').innerText = sales;
-            document.getElementById('order-count').innerText = snap.size;
+            document.getElementById('sales-val').innerText = isNaN(sales) ? 0 : sales;
+            document.getElementById('order-val').innerText = snap.size;
         });
 
-        window.updateStatus = (id, s) => updateDoc(doc(db, "orders", id), { status: s });
-        
-        // মেনু ও স্টক কন্ট্রোল
+        window.updateStat = (id, s) => updateDoc(doc(db, "orders", id), { status: s });
+
+        // মেনু ও স্টক
         onSnapshot(collection(db, "restaurants/demo-restaurant/menu"), (snap) => {
-            const mList = document.getElementById('admin-menu-list'); mList.innerHTML = '';
+            const mList = document.getElementById('menu-list'); mList.innerHTML = '';
             snap.forEach(d => {
                 const i = d.data();
-                mList.innerHTML += `
-                    <div class="flex items-center justify-between bg-[#222] p-2 rounded text-xs">
-                        <div class="flex items-center gap-2">
-                            <img src="${i.image}" class="w-8 h-8 rounded object-cover">
-                            <span>${i.name}</span>
-                        </div>
-                        <div class="flex gap-2 items-center">
-                            <button onclick="toggleStock('${d.id}', ${!i.is_available})" class="${i.is_available?'text-green-500':'text-red-500'} font-bold">
-                                ${i.is_available?'In Stock':'Out'}
-                            </button>
-                            <button onclick="deleteDoc(doc(db, 'restaurants/demo-restaurant/menu', '${d.id}'))" class="text-gray-500">✖</button>
-                        </div>
-                    </div>`;
+                mList.innerHTML += `<div class="flex items-center justify-between bg-[#222] p-3 rounded-xl border border-gray-800">
+                    <div class="flex items-center gap-3 text-xs">
+                        <img src="${i.image}" class="w-10 h-10 rounded-lg object-cover">
+                        <div><p class="font-bold">${i.name}</p><p class="text-[#c9a84c]">৳${i.price_full}</p></div>
+                    </div>
+                    <button onclick="toggleStock('${d.id}', ${!i.is_available})" class="text-[10px] font-bold ${i.is_available?'text-green-500':'text-red-500'}">
+                        ${i.is_available?'In Stock':'Out of Stock'}
+                    </button>
+                </div>`;
             });
         });
 
-        window.toggleStock = (id, state) => updateDoc(doc(db, "restaurants/demo-restaurant/menu", id), { is_available: state });
+        window.toggleStock = (id, s) => updateDoc(doc(db, "restaurants/demo-restaurant/menu", id), { is_available: s });
 
         window.addItem = () => {
+            const n = document.getElementById('nInp').value;
+            const p = Number(document.getElementById('pInp').value);
+            if(!n || !p) return alert("তথ্য দিন!");
             addDoc(collection(db, "restaurants/demo-restaurant/menu"), {
-                name: document.getElementById('nInp').value,
-                price_full: Number(document.getElementById('pInp').value),
-                image: document.getElementById('iInp').value,
-                category: "All", is_available: true, createdAt: serverTimestamp()
+                name: n, price_full: p, price_half: p*0.6, image: document.getElementById('iInp').value, category: "All", is_available: true, createdAt: serverTimestamp()
             });
         };
-        // ... তোর আগের সব জাভাস্ক্রিপ্ট কোড এখানে থাকবে ...
 
-        // <--- এইখানে গ্রাফের কোডটি পেস্ট কর --->
-       // ১. গ্রাফের লেবেল এবং প্রাথমিক ডাটা সেটআপ
-const days = ['শুক্র', 'বৃহঃ', 'বুধ', 'মঙ্গল', 'সোম', 'রবি', 'শনি']; // উল্টো করে সাজানো গ্রাফের জন্য
-const salesData = [0, 0, 0, 0, 0, 0, 0]; 
-
-const ctx = document.getElementById('salesChart').getContext('2d');
-let myChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: days.reverse(),
-        datasets: [{
-            label: 'বিক্রি (৳)',
-            data: salesData,
-            borderColor: '#c9a84c',
-            backgroundColor: 'rgba(201, 168, 76, 0.1)',
-            fill: true,
-            tension: 0.4
-        }]
-    },
-    options: { responsive: true, plugins: { legend: { display: false } } }
-});
-
-// ২. ফায়ারবেস থেকে গত ৭ দিনের ডাটা ক্যালকুলেশন
-const sevenDaysAgo = new Date();
-sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-
-onSnapshot(query(collection(db, "orders"), where("status", "==", "Done"), where("timestamp", ">=", sevenDaysAgo)), (snap) => {
-    const dailyTotals = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0}; // ৭ দিনের জন্য খালি ঘর
-    
-    snap.forEach(doc => {
-        const order = doc.data();
-        const orderDate = order.timestamp.toDate();
-        const diffInDays = Math.floor((new Date() - orderDate) / (1000 * 60 * 60 * 24));
-        
-        if (diffInDays < 7) {
-            dailyTotals[diffInDays] += order.total_amount;
-        }
-    });
-
-    // ৩. গ্রাফের ডাটা আপডেট করা
-    const updatedSales = Object.values(dailyTotals).reverse();
-    myChart.data.datasets[0].data = updatedSales;
-    myChart.update(); // গ্রাফটি রিয়েল-টাইমে রিফ্রেশ হবে
-});
-
-    </script> </body>
-</html>
+        window.printBill = (id) => {
+            // সিম্পল প্রিন্ট লজিক
+            const orderCard = event.target.closest('div.bg-[#222]').innerHTML;
+            const pArea = document.getElementById('p-area');
+            pArea.innerHTML = `<center><h2>SUPREME IT HOTEL</h2><p>Panchobati, Narayanganj</p><hr>${orderCard}</center>`;
+            window.print();
+        };
     </script>
-</body> 
+</body>
 </html>
-
