@@ -146,31 +146,49 @@
         // ... তোর আগের সব জাভাস্ক্রিপ্ট কোড এখানে থাকবে ...
 
         // <--- এইখানে গ্রাফের কোডটি পেস্ট কর --->
-        const ctx = document.getElementById('salesChart').getContext('2d');
-        let myChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['শনি', 'রবি', 'সোম', 'মঙ্গল', 'বুধ', 'বৃহঃ', 'শুক্র'],
-                datasets: [{
-                    label: 'বিক্রি (৳)',
-                    data: [1200, 1900, 1500, 2500, 2200, 3000, 4500], // এখানে তোর সেলস ডাটা দেখাবে
-                    borderColor: '#c9a84c',
-                    borderWidth: 2,
-                    tension: 0.4,
-                    fill: true,
-                    backgroundColor: 'rgba(201, 168, 76, 0.1)'
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { display: false } },
-                scales: { 
-                    y: { display: false }, 
-                    x: { grid: { display: false }, ticks: { color: '#888' } } 
-                }
-            }
-        });
-        // <--- গ্রাফের কোড শেষ --->
+       // ১. গ্রাফের লেবেল এবং প্রাথমিক ডাটা সেটআপ
+const days = ['শুক্র', 'বৃহঃ', 'বুধ', 'মঙ্গল', 'সোম', 'রবি', 'শনি']; // উল্টো করে সাজানো গ্রাফের জন্য
+const salesData = [0, 0, 0, 0, 0, 0, 0]; 
+
+const ctx = document.getElementById('salesChart').getContext('2d');
+let myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: days.reverse(),
+        datasets: [{
+            label: 'বিক্রি (৳)',
+            data: salesData,
+            borderColor: '#c9a84c',
+            backgroundColor: 'rgba(201, 168, 76, 0.1)',
+            fill: true,
+            tension: 0.4
+        }]
+    },
+    options: { responsive: true, plugins: { legend: { display: false } } }
+});
+
+// ২. ফায়ারবেস থেকে গত ৭ দিনের ডাটা ক্যালকুলেশন
+const sevenDaysAgo = new Date();
+sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+onSnapshot(query(collection(db, "orders"), where("status", "==", "Done"), where("timestamp", ">=", sevenDaysAgo)), (snap) => {
+    const dailyTotals = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0}; // ৭ দিনের জন্য খালি ঘর
+    
+    snap.forEach(doc => {
+        const order = doc.data();
+        const orderDate = order.timestamp.toDate();
+        const diffInDays = Math.floor((new Date() - orderDate) / (1000 * 60 * 60 * 24));
+        
+        if (diffInDays < 7) {
+            dailyTotals[diffInDays] += order.total_amount;
+        }
+    });
+
+    // ৩. গ্রাফের ডাটা আপডেট করা
+    const updatedSales = Object.values(dailyTotals).reverse();
+    myChart.data.datasets[0].data = updatedSales;
+    myChart.update(); // গ্রাফটি রিয়েল-টাইমে রিফ্রেশ হবে
+});
 
     </script> </body>
 </html>
