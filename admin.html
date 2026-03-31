@@ -129,7 +129,21 @@
             document.getElementById('order-val').innerText = snap.size;
         });
 
-        window.updateStat = (id, s) => updateDoc(doc(db, "orders", id), { status: s });
+        window.updateStat = async (id, s) => {
+    if (s === 'Done') {
+        const method = prompt("পেমেন্ট মেথড লিখুন (Cash/Bkash/Nagad):", "Cash");
+        if (method) {
+            await updateDoc(doc(db, "orders", id), { 
+                status: s, 
+                payment_method: method,
+                paid_at: serverTimestamp() 
+            });
+            alert("পেমেন্ট সাকসেসফুল এবং অর্ডার সম্পন্ন হয়েছে!");
+        }
+    } else {
+        await updateDoc(doc(db, "orders", id), { status: s });
+    }
+};
 
         // মেনু লোড
         onSnapshot(collection(db, "restaurants/demo-restaurant/menu"), (snap) => {
