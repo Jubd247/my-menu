@@ -100,13 +100,6 @@
         });
 
         // অর্ডার লোড
-        onSnapshot(query(collection(db, "orders"), orderBy("timestamp", "desc")), (snap) => {
-            let sales = 0; const list = document.getElementById('order-list'); list.innerHTML = '';
-            snap.forEach(d => {
-                const o = d.data(); 
-                const amt = Number(o.total_amount) || 0;
-                if(o.status === 'Done') sales += amt;
-                // onSnapshot এর ভেতর এই অংশটুকু আপডেট কর
 let sales = 0; 
 let cashSales = 0; 
 let digitalSales = 0;
