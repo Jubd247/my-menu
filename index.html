@@ -4,69 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Supreme IT - Digital Menu</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --gold: #c9a84c; --bg: #0d0d0d; --card: #161616; --text: #f5f0e8; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 80px; }
-        
-        .header { background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80'); 
-                  height: 150px; background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: center; align-items: center; border-bottom: 2px solid var(--gold); }
-        .header h1 { color: var(--gold); margin: 0; font-size: 24px; text-transform: uppercase; }
-
+        .header { background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80'); height: 150px; background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: center; align-items: center; border-bottom: 2px solid var(--gold); }
         .container { padding: 15px; }
         .customer-info { background: var(--card); padding: 15px; border-radius: 12px; border: 1px solid #333; margin-bottom: 20px; }
         input, select { width: 100%; padding: 12px; margin: 8px 0; background: #222; border: 1px solid #444; color: #fff; border-radius: 8px; box-sizing: border-box; }
-        
-        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .menu-item { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid #333; position: relative; }
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
+        .menu-item { background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid #333; text-align: center; }
         .menu-item img { width: 100%; height: 120px; object-fit: cover; }
-        .menu-info { padding: 10px; text-align: center; }
-        .menu-info h3 { margin: 5px 0; font-size: 16px; }
-        .menu-info p { color: var(--gold); font-weight: bold; margin: 5px 0; }
-        
-        .add-btn { background: var(--gold); border: none; padding: 8px 15px; border-radius: 20px; font-weight: bold; cursor: pointer; width: 100%; }
-
-        .cart-bar { position: fixed; bottom: 0; width: 100%; background: #1a1a1a; padding: 15px; border-top: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; }
+        .add-btn { background: var(--gold); border: none; padding: 10px; border-radius: 20px; font-weight: bold; cursor: pointer; width: 90%; margin-bottom: 10px; }
+        .cart-bar { position: fixed; bottom: 0; width: 100%; background: #1a1a1a; padding: 15px; border-top: 2px solid var(--gold); display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; z-index: 100; }
         .order-btn { background: var(--gold); color: #000; padding: 12px 25px; border-radius: 8px; font-weight: bold; border: none; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>SUPREME IT HOTEL</h1>
-        <p>সেরা স্বাদে সেরা খাবার</p>
-    </div>
+<div class="header"><h1>SUPREME IT HOTEL</h1><p>সেরা স্বাদে সেরা খাবার</p></div>
 
-    <div class="container">
-        <div class="customer-info">
-            <input type="text" id="custName" placeholder="আপনার নাম লিখুন">
-            <select id="tableNo">
-                <option value="">আপনার টেবিল নম্বর সিলেক্ট করুন</option>
-                <option value="1">টেবিল - ১</option>
-                <option value="2">টেবিল - ২</option>
-                <option value="3">টেবিল - ৩</option>
-                <option value="4">টেবিল - ৪</option>
-                <option value="5">টেবিল - ৫</option>
-            </select>
-            <select id="payMethod">
-                <option value="Cash">Cash (নগদ পেমেন্ট)</option>
-                <option value="Bkash">Bkash (বিকাশ)</option>
-                <option value="Nagad">Nagad (নগদ)</option>
-            </select>
-        </div>
-
-        <div id="menu-container" class="menu-grid">
-            <p style="text-align:center; grid-column: 1/3;">মেনু লোড হচ্ছে...</p>
-        </div>
+<div class="container">
+    <div class="customer-info">
+        <input type="text" id="custName" placeholder="আপনার নাম">
+        <input type="tel" id="custPhone" placeholder="মোবাইল নম্বর (১১ ডিজিট)">
+        <select id="tableNo">
+            <option value="">টেবিল নম্বর সিলেক্ট করুন</option>
+            <option value="1">টেবিল - ১</option><option value="2">টেবিল - ২</option>
+            <option value="3">টেবিল - ৩</option><option value="4">টেবিল - ৪</option>
+            <option value="5">টেবিল - ৫</option>
+        </select>
+        <select id="payMethod">
+            <option value="Cash">Cash (নগদ)</option><option value="Bkash">Bkash (বিকাশ)</option><option value="Nagad">Nagad (নগদ)</option>
+        </select>
     </div>
+    <div id="menu-container" class="menu-grid"></div>
+</div>
 
-    <div class="cart-bar">
-        <div>
-            <span style="font-size: 14px; color: #aaa;">মোট বিল:</span><br>
-            <b style="font-size: 18px; color: var(--gold);">৳ <span id="cart-total">0</span></b>
-        </div>
-        <button class="order-btn" onclick="placeOrder()">অর্ডার করুন</button>
-    </div>
+<div class="cart-bar">
+    <div><span style="color:#aaa;">মোট বিল:</span><br><b style="color:var(--gold);">৳ <span id="cart-total">0</span></b></div>
+    <button class="order-btn" onclick="placeOrder()">অর্ডার করুন</button>
+</div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
@@ -76,59 +53,25 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    let cart = [];
-    let totalBill = 0;
+    let cart = []; let totalBill = 0;
 
-    // মেনু লোড করা
     onSnapshot(query(collection(db, "restaurants/demo-restaurant/menu"), orderBy("createdAt", "desc")), (snap) => {
-        const container = document.getElementById('menu-container');
-        container.innerHTML = '';
+        const cont = document.getElementById('menu-container'); cont.innerHTML = '';
         snap.forEach(d => {
-            const item = d.data();
-            container.innerHTML += `
-                <div class="menu-item">
-                    <img src="${item.image || 'https://via.placeholder.com/150'}" alt="${item.name}">
-                    <div class="menu-info">
-                        <h3>${item.name}</h3>
-                        <p>৳${item.price}</p>
-                        <button class="add-btn" onclick="addToCart('${item.name}', ${item.price})">অ্যাড করুন</button>
-                    </div>
-                </div>`;
+            const i = d.data();
+            cont.innerHTML += `<div class="menu-item"><img src="${i.image || 'https://via.placeholder.com/150'}"><h3>${i.name}</h3><p>৳${i.price}</p><button class="add-btn" onclick="addToCart('${i.name}', ${i.price})">অ্যাড করুন</button></div>`;
         });
     });
 
-    window.addToCart = (name, price) => {
-        cart.push(name);
-        totalBill += price;
-        document.getElementById('cart-total').innerText = totalBill;
-    };
+    window.addToCart = (n, p) => { cart.push(n); totalBill += p; document.getElementById('cart-total').innerText = totalBill; };
 
-    // অর্ডার প্লেস করা
     window.placeOrder = async () => {
         const name = document.getElementById('custName').value;
+        const phone = document.getElementById('custPhone').value;
         const table = document.getElementById('tableNo').value;
-        const pay = document.getElementById('payMethod').value;
-
-        if(!name || !table || cart.length === 0) {
-            alert("দয়া করে নাম, টেবিল নম্বর দিন এবং অন্তত একটি খাবার সিলেক্ট করুন!");
-            return;
-        }
-
-        try {
-            await addDoc(collection(db, "orders"), {
-                customer_name: name,
-                table_number: table,
-                items: cart.join(", "),
-                total_amount: totalBill,
-                payment_method: pay,
-                timestamp: serverTimestamp()
-            });
-            alert("আপনার অর্ডারটি সফলভাবে পাঠানো হয়েছে!");
-            cart = []; totalBill = 0;
-            document.getElementById('cart-total').innerText = 0;
-        } catch (e) {
-            alert("অর্ডারে সমস্যা হয়েছে, আবার চেষ্টা করুন।");
-        }
+        if(!name || !phone || !table || cart.length === 0) { alert("সব তথ্য পূরণ করুন!"); return; }
+        await addDoc(collection(db, "orders"), { customer_name: name, customer_phone: phone, table_number: table, items: cart.join(", "), total_amount: totalBill, payment_method: document.getElementById('payMethod').value, timestamp: serverTimestamp() });
+        alert("অর্ডার সফল!"); cart = []; totalBill = 0; document.getElementById('cart-total').innerText = 0;
     };
 </script>
 </body>
