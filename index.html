@@ -8,24 +8,23 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root { --gold: #c9a84c; --bg: #0d0d0d; }
-        body { background-color: var(--bg); color: #f5f0e8; font-family: sans-serif; overflow-x: hidden; }
+        body { background-color: var(--bg); color: #f5f0e8; font-family: sans-serif; }
         .gold-text { color: var(--gold); }
         .gold-bg { background-color: var(--gold); }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .menu-card img { transition: transform 0.3s; cursor: pointer; }
-        .menu-card img:active { transform: scale(1.8); z-index: 100; position: relative; border-radius: 10px; }
-        .category-btn.active { background-color: var(--gold); color: black; border-color: var(--gold); }
+        .menu-card img { transition: 0.3s; cursor: zoom-in; }
+        .menu-card img:active { transform: scale(1.5); z-index: 50; position: relative; }
+        .category-btn.active { background: var(--gold); color: black; border-color: var(--gold); }
     </style>
 </head>
 <body class="pb-32">
 
     <header class="h-44 bg-cover bg-center flex flex-col items-center justify-center border-b-2 border-[#c9a84c] mb-6" style="background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=800');">
-        <h1 class="text-3xl font-bold gold-text tracking-widest">SUPREME IT HOTEL</h1>
-        <p class="text-sm opacity-80 mt-2">Panchobati, Narayanganj</p>
+        <h1 class="text-3xl font-bold gold-text tracking-widest uppercase">Supreme IT Hotel</h1>
+        <p class="text-xs opacity-70 mt-2">Panchobati, Narayanganj</p>
     </header>
 
     <div class="p-4 max-w-md mx-auto">
-        <div class="bg-[#161616] p-4 rounded-2xl border border-gray-800 mb-6 shadow-xl">
+        <div class="bg-[#161616] p-5 rounded-2xl border border-gray-800 mb-6 shadow-2xl">
             <input type="text" id="custName" placeholder="আপনার নাম" class="w-full p-3 mb-3 bg-[#222] border border-gray-700 rounded-xl text-white outline-none focus:border-[#c9a84c]">
             <input type="tel" id="custPhone" placeholder="মোবাইল নম্বর" class="w-full p-3 mb-3 bg-[#222] border border-gray-700 rounded-xl text-white outline-none focus:border-[#c9a84c]">
             <select id="tableNo" class="w-full p-3 bg-[#222] border border-gray-700 rounded-xl text-white outline-none focus:border-[#c9a84c]">
@@ -34,7 +33,7 @@
             </select>
         </div>
 
-        <div class="flex gap-2 overflow-x-auto pb-4 no-scrollbar mb-4" id="cat-list">
+        <div class="flex gap-2 overflow-x-auto pb-4 mb-4 no-scrollbar" id="cat-tabs">
             <button onclick="filterMenu('All')" class="category-btn active px-5 py-2 border border-gray-700 rounded-full whitespace-nowrap text-sm">সব মেনু</button>
             <button onclick="filterMenu('Biriyani')" class="category-btn px-5 py-2 border border-gray-700 rounded-full whitespace-nowrap text-sm">বিরিয়ানি</button>
             <button onclick="filterMenu('Drinks')" class="category-btn px-5 py-2 border border-gray-700 rounded-full whitespace-nowrap text-sm">ড্রিঙ্কস</button>
@@ -43,32 +42,33 @@
         <div id="menu-grid" class="grid grid-cols-2 gap-4"></div>
     </div>
 
-    <div id="cart-bar" class="fixed bottom-0 left-0 w-full bg-[#111] border-t border-[#c9a84c] p-4 flex justify-between items-center z-50">
+    <div class="fixed bottom-0 left-0 w-full bg-[#111] border-t border-[#c9a84c] p-4 flex justify-between items-center z-50 shadow-2xl">
         <div>
-            <p class="text-[10px] text-gray-500 uppercase tracking-tighter">Total Amount</p>
+            <p class="text-[10px] text-gray-500 uppercase">Total Bill</p>
             <p class="text-xl font-bold gold-text">৳ <span id="cart-total">0</span></p>
         </div>
-        <button onclick="placeOrder()" class="gold-bg text-black px-10 py-3 rounded-xl font-bold shadow-lg active:scale-95 transition-all">অর্ডার দিন</button>
+        <button onclick="placeOrder()" class="gold-bg text-black px-10 py-3 rounded-xl font-bold active:scale-95 transition-all shadow-lg">অর্ডার দিন</button>
     </div>
 
-    <div id="v-modal" class="fixed inset-0 bg-black/90 z-[100] hidden flex items-center justify-center p-6 backdrop-blur-sm">
+    <div id="v-modal" class="fixed inset-0 bg-black/90 z-[100] hidden flex items-center justify-center p-6 backdrop-blur-md">
         <div class="bg-[#161616] p-6 rounded-3xl border border-[#c9a84c] w-full max-w-xs text-center shadow-2xl">
-            <h3 id="v-name" class="text-xl font-bold gold-text mb-6">আইটেম</h3>
+            <h3 id="v-name" class="text-xl font-bold gold-text mb-6 uppercase">আইটেম</h3>
             <div class="space-y-4">
-                <button onclick="confirmAdd('Full')" class="w-full bg-[#222] p-4 rounded-xl border border-gray-800 flex justify-between items-center hover:border-[#c9a84c]">
-                    <span class="font-bold">Full Portion</span> <span id="v-full-p" class="gold-text font-bold">৳0</span>
+                <button onclick="confirmAdd('Full')" class="w-full bg-[#222] p-4 rounded-xl border border-gray-800 flex justify-between items-center hover:border-[#c9a84c] transition">
+                    <span class="font-bold">Full Portion</span> <span id="v-full-p" class="gold-text font-bold text-lg">৳0</span>
                 </button>
-                <button onclick="confirmAdd('Half')" class="w-full bg-[#222] p-4 rounded-xl border border-gray-800 flex justify-between items-center hover:border-[#c9a84c]">
-                    <span class="font-bold">Half Portion</span> <span id="v-half-p" class="gold-text font-bold">৳0</span>
+                <button onclick="confirmAdd('Half')" class="w-full bg-[#222] p-4 rounded-xl border border-gray-800 flex justify-between items-center hover:border-[#c9a84c] transition">
+                    <span class="font-bold">Half Portion</span> <span id="v-half-p" class="gold-text font-bold text-lg">৳0</span>
                 </button>
             </div>
-            <button onclick="closeModal()" class="mt-8 text-gray-500 text-sm underline">বাতিল করুন</button>
+            <button onclick="closeModal()" class="mt-8 text-gray-500 text-sm underline hover:text-white">বাতিল করুন</button>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, addDoc, serverTimestamp, query, orderBy, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, addDoc, serverTimestamp, doc } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
+
         const firebaseConfig = { apiKey: "AIzaSyAIBAoApGa4HXrdk15tezQl9WYeIIGEci4", authDomain: "qr-menu-system-88ea9.firebaseapp.com", projectId: "qr-menu-system-88ea9", appId: "1:1038515456469:web:bfd7366988b7119ea9155c" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
@@ -83,13 +83,13 @@
         function renderMenu(items) {
             const grid = document.getElementById('menu-grid');
             grid.innerHTML = items.map(i => `
-                <div class="bg-[#161616] rounded-2xl overflow-hidden border border-gray-800 ${!i.is_available ? 'opacity-40 grayscale' : ''}">
+                <div class="bg-[#161616] rounded-2xl overflow-hidden border border-gray-800 ${!i.is_available ? 'opacity-40 grayscale' : ''} shadow-lg">
                     <img src="${i.image}" class="w-full h-32 object-cover">
-                    <div class="p-3">
+                    <div class="p-3 text-center">
                         <h3 class="font-bold text-xs h-8 line-clamp-2">${i.name}</h3>
-                        <div class="flex justify-between items-center mt-3">
+                        <div class="flex justify-center items-center mt-3 gap-3">
                             <span class="gold-text font-bold text-sm">৳${i.price_full}</span>
-                            ${i.is_available ? `<button onclick="openV('${i.name}', ${i.price_full}, ${i.price_half || i.price_full*0.6})" class="bg-[#222] border border-gray-700 p-1 px-3 rounded-lg text-[10px] hover:border-[#c9a84c]">+ অ্যাড</button>` : `<span class="text-red-500 text-[10px]">Stock Out</span>`}
+                            ${i.is_available ? `<button onclick="openV('${i.name}', ${i.price_full}, ${i.price_half || i.price_full*0.6})" class="bg-[#222] border border-gray-700 px-3 py-1 rounded-lg text-[10px] hover:border-[#c9a84c] transition">+ অ্যাড</button>` : `<span class="text-red-500 text-[10px]">Stock Out</span>`}
                         </div>
                     </div>
                 </div>
@@ -123,26 +123,26 @@
             const n = document.getElementById('custName').value;
             const p = document.getElementById('custPhone').value;
             const t = document.getElementById('tableNo').value;
-            if(!n || !p || !t || cart.length === 0) return alert("তথ্য পূরণ করুন!");
+            if(!n || !p || !t || cart.length === 0) return alert("দয়া করে সব তথ্য দিন!");
 
             const docRef = await addDoc(collection(db, "orders"), {
                 customer_name: n, customer_phone: p, table_number: t,
-                items: cart.join(", "), total_amount: totalBill, status: "Pending", timestamp: serverTimestamp()
+                items: cart.join(", "), total_amount: Number(totalBill), status: "Pending", timestamp: serverTimestamp()
             });
 
-            document.body.innerHTML = `<div class="h-screen flex flex-col items-center justify-center text-center p-10">
+            document.body.innerHTML = `<div class="h-screen flex flex-col items-center justify-center text-center p-10 bg-[#0d0d0d]">
                 <div class="w-16 h-16 border-4 border-t-[#c9a84c] border-gray-800 rounded-full animate-spin mb-6"></div>
-                <h2 class="text-2xl font-bold gold-text">অর্ডার সাকসেস!</h2>
-                <p id="track-txt" class="mt-4 text-gray-400 italic">স্ট্যাটাস: Pending</p>
-                <div class="w-full bg-gray-900 h-2 mt-8 rounded-full overflow-hidden"><div id="track-bar" class="bg-[#c9a84c] h-full transition-all duration-700" style="width:20%"></div></div>
-                <button onclick="location.reload()" class="mt-12 text-sm text-gray-600 underline">নতুন অর্ডার</button>
+                <h2 class="text-2xl font-bold gold-text uppercase">Order Success!</h2>
+                <p id="track-txt" class="mt-4 text-gray-400 italic">অর্ডার স্ট্যাটাস: Pending</p>
+                <div class="w-full bg-gray-900 h-2 mt-8 rounded-full overflow-hidden shadow-inner"><div id="track-bar" class="bg-[#c9a84c] h-full transition-all duration-700" style="width:20%"></div></div>
+                <button onclick="location.reload()" class="mt-12 text-sm text-gray-600 underline tracking-widest uppercase">New Order</button>
             </div>`;
 
             onSnapshot(doc(db, "orders", docRef.id), (doc) => {
                 const s = doc.data().status; const bar = document.getElementById('track-bar'); const txt = document.getElementById('track-txt');
-                if(s==='Cooking'){ bar.style.width="50%"; txt.innerText="রান্না হচ্ছে..."; }
-                else if(s==='Served'){ bar.style.width="100%"; txt.innerText="টেবিলে দেওয়া হয়েছে!"; }
-                else if(s==='Done'){ txt.innerText="খাবার উপভোগ করুন!"; bar.style.background="#10b981"; }
+                if(s==='Cooking'){ bar.style.width="50%"; txt.innerText="আপনার খাবার রান্না হচ্ছে..."; }
+                else if(s==='Served'){ bar.style.width="100%"; txt.innerText="খাবার টেবিলে সার্ভ করা হয়েছে!"; }
+                else if(s==='Done'){ txt.innerText="খাবার এনজয় করুন! (Done)"; bar.style.background="#10b981"; }
                 else if(s==='Cancelled'){ txt.innerText="অর্ডার বাতিল হয়েছে"; bar.style.width="100%"; bar.style.background="#ef4444"; }
             });
         };
