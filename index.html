@@ -100,19 +100,49 @@
         };
 
         window.placeOrder = async () => {
-            const name = document.getElementById('custName').value;
-            const phone = document.getElementById('custPhone').value;
-            const table = document.getElementById('tableNo').value;
-            if(!name || !phone || !table || cart.length === 0) { alert("সব তথ্য সঠিকভাবে দিন!"); return; }
+    const name = document.getElementById('custName').value;
+    const phone = document.getElementById('custPhone').value;
+    const table = document.getElementById('tableNo').value;
+    
+    if(!name || !phone || !table || cart.length === 0) { 
+        alert("সব তথ্য সঠিকভাবে দিন!"); return; 
+    }
 
-            await addDoc(collection(db, "orders"), {
-                customer_name: name, customer_phone: phone, table_number: table,
-                items: cart.join(", "), total_amount: totalBill,
-                status: "Pending", timestamp: serverTimestamp()
-            });
-            alert("অর্ডার কিচেনে পাঠানো হয়েছে!");
-            cart = []; totalBill = 0; document.getElementById('cart-total').innerText = 0;
-        };
-    </script>
-</body>
-</html>
+    const orderData = {
+        customer_name: name,
+        customer_phone: phone,
+        table_number: table,
+        items: cart.join(", "),
+        total_amount: totalBill,
+        status: "Pending", // শুরুর স্ট্যাটাস
+        timestamp: serverTimestamp()
+    };
+
+    const docRef = await addDoc(collection(db, "orders"), orderData);
+    
+    // কাস্টমারকে ট্র্যাকিং স্ক্রিন দেখানো
+    document.body.innerHTML = `
+        <div class="flex flex-col items-center justify-center h-screen p-10 text-center">
+            <div class="w-20 h-20 border-4 border-t-[#c9a84c] border-gray-800 rounded-full animate-spin mb-6"></div>
+            <h2 class="text-2xl font-bold gold-text mb-2">ধন্যবাদ, ${name}!</h2>
+            <p class="text-gray-400">আপনার অর্ডারটি কিচেনে পাঠানো হয়েছে।</p>
+            <div class="w-full bg-gray-800 h-2 mt-10 rounded-full overflow-hidden">
+                <div id="track-bar" class="bg-[#c9a84c] h-full transition-all duration-500" style="width: 25%"></div>
+            </div>
+            <p id="track-text" class="mt-4 text-[#c9a84c] font-bold italic text-sm">অর্ডার স্ট্যাটাস: Pending</p>
+            <button onclick="location.reload()" class="mt-10 text-xs text-gray-500 underline">নতুন অর্ডার করুন</button>
+        </div>
+    `;
+
+    // রিয়েল-টাইম স্ট্যাটাস আপডেট শোনা
+    onSnapshot(doc(db, "orders", docRef.id), (doc) => {
+        const s = doc.data().status;
+        const bar = document.getElementById('track-bar');
+        const txt = document.getElementById('track-text');
+        
+        if(s === 'Cooking') { bar.style.width = "50%"; txt.innerText = "রান্না হচ্ছে (Cooking)..."; }
+        else if(s === 'Served') { bar.style.width = "100%"; txt.innerText = "টেবিলে সার্ভ করা হয়েছে (Served)!"; }
+        else if(s === 'Done') { txt.innerText = "খাবার এনজয় করুন! (Done)"; bar.classList.add('bg-green-500'); }
+        else if(s === 'Cancelled') { txt.innerText = "দুঃখিত, অর্ডারটি বাতিল করা হয়েছে।"; bar.style.width = "0%"; bar.classList.add('bg-red-500'); }
+    });
+};
