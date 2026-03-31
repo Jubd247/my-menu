@@ -100,20 +100,13 @@
         });
 
         // অর্ডার লোড
-let sales = 0; 
-let cashSales = 0; 
-let digitalSales = 0;
-
-snap.forEach(d => {
-    const o = d.data();
-    const amt = Number(o.total_amount) || 0;
-    if (o.status === 'Done') {
-        sales += amt;
-        if (o.payment_method === 'Cash') cashSales += amt;
-        else digitalSales += amt;
-    }
-    // ... বাকি লিস্ট রেন্ডার কোড ...
-});
+          onSnapshot(query(collection(db, "orders"), orderBy("timestamp", "desc")), (snap) => {
+            let sales = 0; const list = document.getElementById('order-list'); list.innerHTML = '';
+            snap.forEach(d => {
+                const o = d.data(); 
+                const amt = Number(o.total_amount) || 0;
+                if(o.status === 'Done') sales += amt;
+                // onSnapshot এর ভেতর এই অংশটুকু আপডেট কর
 
 document.getElementById('sales-val').innerText = sales;
 // তুই চাইলে আলাদা দুটা স্প্যান বানিয়ে সেখানে cashSales এবং digitalSales দেখাতে পারিস
