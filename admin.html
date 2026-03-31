@@ -79,14 +79,27 @@
         const db = getFirestore(app);
 
         // লগিন ফাংশন
-        window.checkPass = () => {
-            const pass = document.getElementById('passInp').value;
-            if(pass === '1234') {
-                document.getElementById('login').style.display = 'none';
-            } else {
-                alert("ভুল পাসওয়ার্ড!");
-            }
-        };
+    // লগইন চেক এবং ব্রাউজারে সেভ করা
+window.checkPass = () => {
+    const pass = document.getElementById('passInp').value;
+    if(pass === '1234') {
+        localStorage.setItem('isAdminLoggedIn', 'true'); // ব্রাউজারে লগইন সেভ হলো
+        document.getElementById('login').style.display = 'none';
+    } else {
+        alert("ভুল পাসওয়ার্ড!");
+    }
+};
+
+// পেজ লোড হওয়ার সময় চেক করা যে আগে লগইন করা ছিল কি না
+window.addEventListener('load', () => {
+    if(localStorage.getItem('isAdminLoggedIn') === 'true') {
+        document.getElementById('login').style.display = 'none';
+    }
+});
+        window.logout = () => {
+    localStorage.removeItem('isAdminLoggedIn');
+    location.reload(); // পেজ রিফ্রেশ দিলে আবার পাসওয়ার্ড চাবে
+};
 
         // চার্ট সেটআপ
         const ctx = document.getElementById('salesChart').getContext('2d');
