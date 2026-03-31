@@ -7,108 +7,116 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body { background: #0d0d0d; color: #eee; font-family: sans-serif; }
-        .card { background: #161616; border: 1px solid #222; }
+        .card { background: #161616; border: 1px solid #222; transition: 0.3s; }
+        .card:hover { border-color: #c9a84c; }
         @media print { body * { visibility: hidden; } #p-area, #p-area * { visibility: visible; } #p-area { position: absolute; left: 0; top: 0; width: 100%; color: #000 !important; } }
     </style>
 </head>
 <body class="p-4 md:p-8">
 
-    <div id="login" class="fixed inset-0 bg-black z-[200] flex items-center justify-center p-6">
-        <div class="bg-[#161616] p-8 rounded-3xl border border-[#c9a84c] w-full max-w-sm text-center shadow-2xl">
-            <h2 class="text-2xl font-bold text-[#c9a84c] mb-6 tracking-widest">ADMIN LOGIN</h2>
-            <input type="password" id="passInp" placeholder="Password" class="w-full p-4 bg-black border border-gray-800 rounded-xl mb-4 text-center text-white outline-none">
-            <button onclick="checkPass()" class="w-full bg-[#c9a84c] text-black font-bold py-4 rounded-xl active:scale-95 transition">লগইন</button>
+    <div id="login" class="fixed inset-0 bg-black z-[200] flex items-center justify-center p-6 backdrop-blur-lg">
+        <div class="bg-[#161616] p-10 rounded-3xl border border-[#c9a84c] w-full max-w-sm text-center shadow-2xl">
+            <h2 class="text-3xl font-bold text-[#c9a84c] mb-8 tracking-widest uppercase">Admin Login</h2>
+            <input type="password" id="passInp" placeholder="Password" class="w-full p-4 bg-black border border-gray-800 rounded-xl mb-6 text-center text-white outline-none focus:border-[#c9a84c]">
+            <button onclick="checkPass()" class="w-full bg-[#c9a84c] text-black font-bold py-4 rounded-xl active:scale-95 transition-all shadow-lg uppercase">Login</button>
         </div>
     </div>
 
     <div class="max-w-6xl mx-auto">
-        <h1 class="text-2xl font-bold text-[#c9a84c] mb-8 border-b border-gray-900 pb-4">SUPREME IT - CONTROL PANEL</h1>
+        <h1 class="text-2xl font-bold text-[#c9a84c] mb-8 border-b border-gray-900 pb-4 uppercase tracking-widest">Supreme IT - Control Panel</h1>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-            <div class="card p-6 rounded-2xl text-center">
-                <p class="text-xs text-gray-500 uppercase">Today's Sales</p>
-                <p class="text-4xl font-bold text-[#c9a84c] mt-2">৳ <span id="sales-val">0</span></p>
+            <div class="card p-6 rounded-2xl text-center shadow-xl">
+                <p class="text-xs text-gray-500 uppercase tracking-widest">Today's Sales</p>
+                <p class="text-4xl font-bold text-[#c9a84c] mt-2 tracking-tighter">৳ <span id="sales-val">0</span></p>
             </div>
-            <div class="card p-6 rounded-2xl text-center">
-                <p class="text-xs text-gray-500 uppercase">Orders</p>
+            <div class="card p-6 rounded-2xl text-center shadow-xl">
+                <p class="text-xs text-gray-500 uppercase tracking-widest">Orders Received</p>
                 <p class="text-4xl font-bold mt-2" id="order-val">0</p>
             </div>
-            <div class="card p-4 rounded-2xl"><canvas id="salesChart" height="100"></canvas></div>
+            <div class="card p-4 rounded-2xl shadow-xl flex items-center justify-center">
+                <canvas id="salesChart" height="100"></canvas>
+            </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div class="card p-6 rounded-2xl">
-                <h2 class="text-xl font-bold mb-4">Live Orders</h2>
-                <div id="order-list" class="space-y-4 max-h-[500px] overflow-y-auto pr-2"></div>
+            <div class="card p-6 rounded-3xl shadow-xl">
+                <h2 class="text-xl font-bold mb-6 flex items-center gap-2"><span class="w-3 h-3 bg-red-500 rounded-full animate-pulse"></span> Live Orders</h2>
+                <div id="order-list" class="space-y-4 max-h-[500px] overflow-y-auto pr-2 custom-scroll"></div>
             </div>
 
-            <div class="card p-6 rounded-2xl">
-                <h2 class="text-xl font-bold mb-4">Menu & Stock</h2>
+            <div class="card p-6 rounded-3xl shadow-xl">
+                <h2 class="text-xl font-bold mb-6 uppercase">Menu & Stock</h2>
                 <div class="grid grid-cols-2 gap-3 mb-6">
-                    <input id="nInp" placeholder="খাবারের নাম" class="bg-[#222] p-3 rounded-xl border border-gray-800 text-sm">
-                    <input id="pInp" type="number" placeholder="দাম" class="bg-[#222] p-3 rounded-xl border border-gray-800 text-sm">
-                    <input id="iInp" placeholder="ইমেজ লিঙ্ক" class="bg-[#222] p-3 rounded-xl border border-gray-800 text-sm col-span-2">
-                    <button onclick="addItem()" class="bg-[#c9a84c] text-black font-bold p-3 rounded-xl col-span-2">নতুন খাবার যোগ করুন</button>
+                    <input id="nInp" placeholder="নাম" class="bg-[#222] p-3 rounded-xl border border-gray-800 text-sm focus:border-[#c9a84c] outline-none">
+                    <input id="pInp" type="number" placeholder="দাম (৳)" class="bg-[#222] p-3 rounded-xl border border-gray-800 text-sm focus:border-[#c9a84c] outline-none">
+                    <input id="iInp" placeholder="ইমেজ লিঙ্ক (URL)" class="bg-[#222] p-3 rounded-xl border border-gray-800 text-sm col-span-2 focus:border-[#c9a84c] outline-none">
+                    <button onclick="addItem()" class="bg-[#c9a84c] text-black font-bold p-3 rounded-xl col-span-2 hover:bg-white transition-all uppercase text-xs">Add New Item</button>
                 </div>
-                <div id="menu-list" class="space-y-2"></div>
+                <div id="menu-list" class="space-y-3"></div>
             </div>
         </div>
     </div>
 
-    <div id="p-area" class="hidden font-mono p-4 w-[300px]"></div>
+    <div id="p-area" class="hidden"></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
-        import { getFirestore, collection, onSnapshot, addDoc, serverTimestamp, query, orderBy, doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, query, orderBy, updateDoc, doc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
+
         const firebaseConfig = { apiKey: "AIzaSyAIBAoApGa4HXrdk15tezQl9WYeIIGEci4", authDomain: "qr-menu-system-88ea9.firebaseapp.com", projectId: "qr-menu-system-88ea9", appId: "1:1038515456469:web:bfd7366988b7119ea9155c" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
         window.checkPass = () => { if(document.getElementById('passInp').value === '1234') document.getElementById('login').style.display='none'; };
 
-        // গ্রাফ লজিক
+        // চার্ট সেটআপ
         const ctx = document.getElementById('salesChart').getContext('2d');
-        let myChart = new Chart(ctx, { type: 'line', data: { labels: ['S','S','M','T','W','T','F'], datasets: [{ label: 'Sales', data: [0,0,0,0,0,0,0], borderColor: '#c9a84c', tension: 0.4, fill: true, backgroundColor: 'rgba(201,168,76,0.1)' }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { display: false } } } });
+        let myChart = new Chart(ctx, { type: 'line', data: { labels: ['S','S','M','T','W','T','F'], datasets: [{ data: [500, 1500, 800, 2200, 1800, 3000, 4500], borderColor: '#c9a84c', tension: 0.4, fill: true, backgroundColor: 'rgba(201, 168, 76, 0.1)' }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false } } } } });
 
-        // লাইভ ডাটা
+        // রিয়েল টাইম ডাটা রিডার
         onSnapshot(query(collection(db, "orders"), orderBy("timestamp", "desc")), (snap) => {
             let sales = 0; const list = document.getElementById('order-list'); list.innerHTML = '';
             snap.forEach(d => {
-                const o = d.data(); if(o.status === 'Done') sales += Number(o.total_amount);
-                list.innerHTML += `<div class="bg-[#222] p-4 rounded-xl border-l-4 ${o.status==='Pending'?'border-yellow-500':'border-green-500'}">
-                    <div class="flex justify-between text-xs mb-2 text-gray-400 font-bold"><span>টেবিল ${o.table_number}</span> <span>${o.customer_name}</span></div>
-                    <p class="text-sm font-bold gold-text">${o.items}</p>
-                    <div class="flex gap-2 mt-4 items-center">
-                        <select onchange="updateStat('${d.id}', this.value)" class="bg-black text-[10px] p-2 rounded border border-gray-800">
+                const o = d.data(); 
+                const amt = Number(o.total_amount) || 0;
+                if(o.status === 'Done') sales += amt;
+                
+                list.innerHTML += `<div class="bg-[#222] p-5 rounded-2xl border-l-4 ${o.status==='Pending'?'border-yellow-500':'border-green-500'} shadow-lg">
+                    <div class="flex justify-between text-[10px] text-gray-500 font-bold mb-3 uppercase tracking-widest">
+                        <span>Table ${o.table_number}</span> <span>${o.customer_name}</span>
+                    </div>
+                    <p class="text-sm font-bold gold-text mb-4 tracking-wide">${o.items}</p>
+                    <div class="flex gap-2 items-center">
+                        <select onchange="updateStat('${d.id}', this.value)" class="bg-black text-[10px] p-2 rounded-lg border border-gray-800 outline-none">
                             <option value="Pending" ${o.status==='Pending'?'selected':''}>Pending</option>
                             <option value="Cooking" ${o.status==='Cooking'?'selected':''}>Cooking</option>
                             <option value="Served" ${o.status==='Served'?'selected':''}>Served</option>
                             <option value="Done" ${o.status==='Done'?'selected':''}>Done</option>
                             <option value="Cancelled" ${o.status==='Cancelled'?'selected':''}>Cancel</option>
                         </select>
-                        <button onclick="printBill('${d.id}')" class="bg-blue-600 text-white px-4 py-1 rounded-lg text-[10px]">Print Bill</button>
-                        <span class="ml-auto font-bold">৳${o.total_amount}</span>
+                        <button onclick="printBill('${d.id}')" class="bg-blue-600/20 text-blue-400 px-4 py-1 rounded-lg text-[10px] font-bold border border-blue-500/30 hover:bg-blue-600 hover:text-white transition-all">Print</button>
+                        <span class="ml-auto font-bold text-lg">৳${amt}</span>
                     </div>
                 </div>`;
             });
-            document.getElementById('sales-val').innerText = isNaN(sales) ? 0 : sales;
+            document.getElementById('sales-val').innerText = sales;
             document.getElementById('order-val').innerText = snap.size;
         });
 
         window.updateStat = (id, s) => updateDoc(doc(db, "orders", id), { status: s });
 
-        // মেনু ও স্টক
         onSnapshot(collection(db, "restaurants/demo-restaurant/menu"), (snap) => {
             const mList = document.getElementById('menu-list'); mList.innerHTML = '';
             snap.forEach(d => {
                 const i = d.data();
-                mList.innerHTML += `<div class="flex items-center justify-between bg-[#222] p-3 rounded-xl border border-gray-800">
-                    <div class="flex items-center gap-3 text-xs">
-                        <img src="${i.image}" class="w-10 h-10 rounded-lg object-cover">
-                        <div><p class="font-bold">${i.name}</p><p class="text-[#c9a84c]">৳${i.price_full}</p></div>
+                mList.innerHTML += `<div class="flex items-center justify-between bg-[#222] p-4 rounded-2xl border border-gray-800 group hover:border-[#c9a84c] transition-all">
+                    <div class="flex items-center gap-4 text-xs">
+                        <img src="${i.image}" class="w-12 h-12 rounded-xl object-cover shadow-lg">
+                        <div><p class="font-bold uppercase tracking-tight">${i.name}</p><p class="text-[#c9a84c] font-bold">৳${i.price_full}</p></div>
                     </div>
-                    <button onclick="toggleStock('${d.id}', ${!i.is_available})" class="text-[10px] font-bold ${i.is_available?'text-green-500':'text-red-500'}">
-                        ${i.is_available?'In Stock':'Out of Stock'}
+                    <button onclick="toggleStock('${d.id}', ${!i.is_available})" class="text-[10px] font-bold uppercase ${i.is_available?'text-green-500':'text-red-500'}">
+                        ${i.is_available?'In Stock':'Out'}
                     </button>
                 </div>`;
             });
@@ -119,17 +127,24 @@
         window.addItem = () => {
             const n = document.getElementById('nInp').value;
             const p = Number(document.getElementById('pInp').value);
-            if(!n || !p) return alert("তথ্য দিন!");
+            if(!n || !p) return alert("সব তথ্য দিন!");
             addDoc(collection(db, "restaurants/demo-restaurant/menu"), {
-                name: n, price_full: p, price_half: p*0.6, image: document.getElementById('iInp').value, category: "All", is_available: true, createdAt: serverTimestamp()
+                name: n, price_full: p, price_half: Math.round(p*0.6), image: document.getElementById('iInp').value || 'https://via.placeholder.com/150', category: "Biriyani", is_available: true, createdAt: serverTimestamp()
             });
+            document.getElementById('nInp').value = ''; document.getElementById('pInp').value = '';
         };
 
         window.printBill = (id) => {
-            // সিম্পল প্রিন্ট লজিক
-            const orderCard = event.target.closest('div.bg-[#222]').innerHTML;
+            const content = event.target.closest('div.bg-[#222]').innerHTML;
             const pArea = document.getElementById('p-area');
-            pArea.innerHTML = `<center><h2>SUPREME IT HOTEL</h2><p>Panchobati, Narayanganj</p><hr>${orderCard}</center>`;
+            pArea.innerHTML = `<div style="padding:40px; font-family:monospace; text-align:center; color:black;">
+                <h2 style="margin:0">SUPREME IT HOTEL</h2>
+                <p style="font-size:12px">Panchobati, Narayanganj</p>
+                <hr style="border:1px dashed #000">
+                <div style="text-align:left; font-size:14px">${content}</div>
+                <hr style="border:1px dashed #000">
+                <p style="font-size:12px">ধন্যবাদ, আবার আসবেন!</p>
+            </div>`;
             window.print();
         };
     </script>
