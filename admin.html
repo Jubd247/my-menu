@@ -146,3 +146,24 @@
     </script>
 </body>
 </html>
+const ctx = document.getElementById('salesChart').getContext('2d');
+let myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: ['শনি', 'রবি', 'সোম', 'মঙ্গল', 'বুধ', 'বৃহঃ', 'শুক্র'],
+        datasets: [{
+            label: 'বিক্রি (৳)',
+            data: [1200, 1900, 1500, 2500, 2200, 3000, 4500], // এখানে লাইভ ডাটা কানেক্ট হবে
+            borderColor: '#c9a84c',
+            borderWidth: 2,
+            tension: 0.4,
+            fill: true,
+            backgroundColor: 'rgba(201, 168, 76, 0.1)'
+        }]
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { display: false }, x: { grid: { display: false } } }
+    }
+});
