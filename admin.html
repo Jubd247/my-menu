@@ -203,30 +203,47 @@ document.getElementById('sales-val').innerText = sales;
         window.toggleStock = (id, s) => updateDoc(doc(db, "restaurants/demo-restaurant/menu", id), { is_available: s });
 
         window.addItem = () => {
-            const n = document.getElementById('nInp').value;
-            const p = Number(document.getElementById('pInp').value);
-            const c = document.getElementById('cInp').value;
-            if(!n || !p) return alert("সব তথ্য দিন!");
-            addDoc(collection(db, "restaurants/demo-restaurant/menu"), {
-                name: n, price_full: p, price_half: Math.round(p*0.6), image: document.getElementById('iInp').value || 'https://via.placeholder.com/150', category: c, is_available: true, createdAt: serverTimestamp()
-            });
-            document.getElementById('nInp').value = ''; document.getElementById('pInp').value = '';
-        };
+    const n = document.getElementById('nInp').value;
+    const p = Number(document.getElementById('pInp').value);
+    const c = document.getElementById('cInp').value;
+    const img = document.getElementById('iInp').value || 'https://via.placeholder.com/150';
+
+    if(!n || !p) return alert("দয়া করে নাম এবং দাম দিন!");
+
+    // এখানে নিশ্চিত করছি যে price_half যেন undefined না থাকে
+    const halfPrice = Math.round(p * 0.6); 
+
+    addDoc(collection(db, "restaurants/demo-restaurant/menu"), {
+        name: n,
+        price_full: p,
+        price_half: halfPrice, // এখানে ভ্যালু ডিফাইন করে দিলাম
+        image: img,
+        category: c,
+        is_available: true,
+        createdAt: serverTimestamp()
+    }).then(() => {
+        alert("আইটেম যোগ হয়েছে!");
+        document.getElementById('nInp').value = ''; 
+        document.getElementById('pInp').value = '';
+        document.getElementById('iInp').value = '';
+    });
+};
 
         window.editItem = (id, name, price, cat) => {
-            const newName = prompt("নতুন নাম দিন:", name);
-            const newPrice = prompt("নতুন দাম (Full) দিন:", price);
-            const newCat = prompt("ক্যাটাগরি দিন (Biriyani/Drinks/Snacks):", cat || "All");
+    const newName = prompt("নতুন নাম দিন:", name);
+    const newPrice = prompt("নতুন দাম (Full) দিন:", price);
+    const newCat = prompt("ক্যাটাগরি দিন (Biriyani/Drinks/Snacks):", cat || "All");
 
-            if (newName && newPrice) {
-                updateDoc(doc(db, "restaurants/demo-restaurant/menu", id), {
-                    name: newName,
-                    price_full: Number(newPrice),
-                    price_half: Math.round(Number(newPrice) * 0.6),
-                    category: newCat
-                }).then(() => alert("আপডেট সফল হয়েছে!"));
-            }
-        };
+    if (newName && newPrice) {
+        const p = Number(newPrice);
+        updateDoc(doc(db, "restaurants/demo-restaurant/menu", id), {
+            name: newName,
+            price_full: p,
+            price_half: Math.round(p * 0.6), // অটো হাফ প্রাইজ সেট হবে
+            category: newCat
+        }).then(() => alert("সফলভাবে আপডেট হয়েছে!"));
+    }
+};
 
         window.printBill = (name, table, items, total) => {
     const pArea = document.getElementById('p-area');
