@@ -10,6 +10,8 @@
         .card { background: #161616; border: 1px solid #222; transition: 0.3s; }
         .card:hover { border-color: #c9a84c; }
         @media print { body * { visibility: hidden; } #p-area, #p-area * { visibility: visible; } #p-area { position: absolute; left: 0; top: 0; width: 100%; color: #000 !important; } }
+        .custom-scroll::-webkit-scrollbar { width: 5px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #c9a84c; border-radius: 10px; }
     </style>
 </head>
 <body class="p-4 md:p-8">
@@ -50,6 +52,14 @@
                 <div class="grid grid-cols-2 gap-3 mb-6">
                     <input id="nInp" placeholder="নাম" class="bg-[#222] p-3 rounded-xl border border-gray-800 text-sm focus:border-[#c9a84c] outline-none">
                     <input id="pInp" type="number" placeholder="দাম (৳)" class="bg-[#222] p-3 rounded-xl border border-gray-800 text-sm focus:border-[#c9a84c] outline-none">
+                    
+                    <select id="cInp" class="bg-[#222] p-3 rounded-xl border border-gray-800 text-sm focus:border-[#c9a84c] outline-none col-span-2">
+                        <option value="All">ক্যাটাগরি সিলেক্ট করুন</option>
+                        <option value="Biriyani">বিরিয়ানি</option>
+                        <option value="Drinks">ড্রিঙ্কস</option>
+                        <option value="Snacks">স্ন্যাকস</option>
+                    </select>
+
                     <input id="iInp" placeholder="ইমেজ লিঙ্ক (URL)" class="bg-[#222] p-3 rounded-xl border border-gray-800 text-sm col-span-2 focus:border-[#c9a84c] outline-none">
                     <button onclick="addItem()" class="bg-[#c9a84c] text-black font-bold p-3 rounded-xl col-span-2 hover:bg-white transition-all uppercase text-xs">Add New Item</button>
                 </div>
@@ -68,13 +78,28 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        window.checkPass = () => { if(document.getElementById('passInp').value === '1234') document.getElementById('login').style.display='none'; };
+        // লগিন ফাংশন
+        window.checkPass = () => {
+            const pass = document.getElementById('passInp').value;
+            if(pass === '1234') {
+                document.getElementById('login').style.display = 'none';
+            } else {
+                alert("ভুল পাসওয়ার্ড!");
+            }
+        };
 
         // চার্ট সেটআপ
         const ctx = document.getElementById('salesChart').getContext('2d');
-        let myChart = new Chart(ctx, { type: 'line', data: { labels: ['S','S','M','T','W','T','F'], datasets: [{ data: [500, 1500, 800, 2200, 1800, 3000, 4500], borderColor: '#c9a84c', tension: 0.4, fill: true, backgroundColor: 'rgba(201, 168, 76, 0.1)' }] }, options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false } } } } });
+        let myChart = new Chart(ctx, { 
+            type: 'line', 
+            data: { 
+                labels: ['S','S','M','T','W','T','F'], 
+                datasets: [{ data: [500, 1500, 800, 2200, 1800, 3000, 4500], borderColor: '#c9a84c', tension: 0.4, fill: true, backgroundColor: 'rgba(201, 168, 76, 0.1)' }] 
+            }, 
+            options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false } } } } 
+        });
 
-        // রিয়েল টাইম ডাটা রিডার
+        // অর্ডার লোড
         onSnapshot(query(collection(db, "orders"), orderBy("timestamp", "desc")), (snap) => {
             let sales = 0; const list = document.getElementById('order-list'); list.innerHTML = '';
             snap.forEach(d => {
@@ -106,61 +131,58 @@
 
         window.updateStat = (id, s) => updateDoc(doc(db, "orders", id), { status: s });
 
+        // মেনু লোড
         onSnapshot(collection(db, "restaurants/demo-restaurant/menu"), (snap) => {
-    const mList = document.getElementById('menu-list'); mList.innerHTML = '';
-    snap.forEach(d => {
-        const i = d.data();
-        mList.innerHTML += `
-            <div class="flex items-center justify-between bg-[#222] p-4 rounded-2xl border border-gray-800 group hover:border-[#c9a84c] transition-all">
-                <div class="flex items-center gap-4 text-xs">
-                    <img src="${i.image}" class="w-12 h-12 rounded-xl object-cover shadow-lg">
-                    <div>
-                        <p class="font-bold uppercase tracking-tight">${i.name}</p>
-                        <p class="text-[#c9a84c] font-bold text-[10px]">Full: ৳${i.price_full} | Half: ৳${i.price_half}</p>
-                        <p class="text-gray-500 text-[8px] uppercase">${i.category || 'No Category'}</p>
-                    </div>
-                </div>
-                <div class="flex gap-3 items-center">
-                    <button onclick="editItem('${d.id}', '${i.name}', ${i.price_full}, '${i.category}')" class="text-blue-400 text-[10px] uppercase font-bold hover:underline">Edit</button>
-                    <button onclick="toggleStock('${d.id}', ${!i.is_available})" class="text-[10px] font-bold uppercase ${i.is_available?'text-green-500':'text-red-500'}">
-                        ${i.is_available?'In Stock':'Out'}
-                    </button>
-                </div>
-            </div>`;
-    });
-});
+            const mList = document.getElementById('menu-list'); mList.innerHTML = '';
+            snap.forEach(d => {
+                const i = d.data();
+                mList.innerHTML += `
+                    <div class="flex items-center justify-between bg-[#222] p-4 rounded-2xl border border-gray-800 group hover:border-[#c9a84c] transition-all">
+                        <div class="flex items-center gap-4 text-xs">
+                            <img src="${i.image}" class="w-12 h-12 rounded-xl object-cover shadow-lg">
+                            <div>
+                                <p class="font-bold uppercase tracking-tight">${i.name}</p>
+                                <p class="text-[#c9a84c] font-bold text-[10px]">Full: ৳${i.price_full} | Half: ৳${i.price_half}</p>
+                                <p class="text-gray-500 text-[8px] uppercase">${i.category || 'No Category'}</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-3 items-center">
+                            <button onclick="editItem('${d.id}', '${i.name}', ${i.price_full}, '${i.category}')" class="text-blue-400 text-[10px] uppercase font-bold hover:underline">Edit</button>
+                            <button onclick="toggleStock('${d.id}', ${!i.is_available})" class="text-[10px] font-bold uppercase ${i.is_available?'text-green-500':'text-red-500'}">
+                                ${i.is_available?'In Stock':'Out'}
+                            </button>
+                        </div>
+                    </div>`;
+            });
+        });
 
         window.toggleStock = (id, s) => updateDoc(doc(db, "restaurants/demo-restaurant/menu", id), { is_available: s });
 
         window.addItem = () => {
             const n = document.getElementById('nInp').value;
             const p = Number(document.getElementById('pInp').value);
+            const c = document.getElementById('cInp').value;
             if(!n || !p) return alert("সব তথ্য দিন!");
             addDoc(collection(db, "restaurants/demo-restaurant/menu"), {
-                name: n, price_full: p, price_half: Math.round(p*0.6), image: document.getElementById('iInp').value || 'https://via.placeholder.com/150', category: "Biriyani", is_available: true, createdAt: serverTimestamp()
+                name: n, price_full: p, price_half: Math.round(p*0.6), image: document.getElementById('iInp').value || 'https://via.placeholder.com/150', category: c, is_available: true, createdAt: serverTimestamp()
             });
             document.getElementById('nInp').value = ''; document.getElementById('pInp').value = '';
         };
-        <select id="cInp" class="bg-[#222] p-3 rounded-xl border border-gray-800 text-sm focus:border-[#c9a84c] outline-none">
-    <option value="All">ক্যাটাগরি সিলেক্ট করুন</option>
-    <option value="Biriyani">বিরিয়ানি</option>
-    <option value="Drinks">ড্রিঙ্কস</option>
-    <option value="Snacks">স্ন্যাকস</option>
-</select>
-        window.editItem = (id, name, price, cat) => {
-    const newName = prompt("নতুন নাম দিন:", name);
-    const newPrice = prompt("নতুন দাম (Full) দিন:", price);
-    const newCat = prompt("ক্যাটাগরি দিন (Biriyani/Drinks/Others):", cat || "All");
 
-    if (newName && newPrice) {
-        updateDoc(doc(db, "restaurants/demo-restaurant/menu", id), {
-            name: newName,
-            price_full: Number(newPrice),
-            price_half: Math.round(Number(newPrice) * 0.6), // অটো হাফ প্রাইজ আপডেট
-            category: newCat
-        }).then(() => alert("আপডেট সফল হয়েছে!"));
-    }
-};
+        window.editItem = (id, name, price, cat) => {
+            const newName = prompt("নতুন নাম দিন:", name);
+            const newPrice = prompt("নতুন দাম (Full) দিন:", price);
+            const newCat = prompt("ক্যাটাগরি দিন (Biriyani/Drinks/Snacks):", cat || "All");
+
+            if (newName && newPrice) {
+                updateDoc(doc(db, "restaurants/demo-restaurant/menu", id), {
+                    name: newName,
+                    price_full: Number(newPrice),
+                    price_half: Math.round(Number(newPrice) * 0.6),
+                    category: newCat
+                }).then(() => alert("আপডেট সফল হয়েছে!"));
+            }
+        };
 
         window.printBill = (id) => {
             const content = event.target.closest('div.bg-[#222]').innerHTML;
