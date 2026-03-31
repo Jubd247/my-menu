@@ -228,19 +228,35 @@ document.getElementById('sales-val').innerText = sales;
             }
         };
 
-        window.printBill = (id) => {
-            const content = event.target.closest('div.bg-[#222]').innerHTML;
-            const pArea = document.getElementById('p-area');
-            pArea.innerHTML = `<div style="padding:40px; font-family:monospace; text-align:center; color:black;">
-                <h2 style="margin:0">SUPREME IT HOTEL</h2>
-                <p style="font-size:12px">Panchobati, Narayanganj</p>
-                <hr style="border:1px dashed #000">
-                <div style="text-align:left; font-size:14px">${content}</div>
-                <hr style="border:1px dashed #000">
-                <p style="font-size:12px">ধন্যবাদ, আবার আসবেন!</p>
-            </div>`;
-            window.print();
-        };
+        window.printBill = (name, table, items, total) => {
+    const pArea = document.getElementById('p-area');
+    pArea.classList.remove('hidden'); // প্রিন্টের জন্য আনহাইড করা
+    
+    // বিলের ফরম্যাট (হোটেলের জন্য প্রফেশনাল লুক)
+    pArea.innerHTML = `
+        <div style="padding:20px; font-family:'Courier New', Courier, monospace; text-align:center; color:black; width:300px; margin:auto; border:1px solid #eee;">
+            <h2 style="margin:0; font-size:20px;">SUPREME IT HOTEL</h2>
+            <p style="font-size:10px; margin:5px 0;">Panchobati, Fatullah, Narayanganj</p>
+            <p style="font-size:10px;">Date: ${new Date().toLocaleString()}</p>
+            <hr style="border:1px dashed #000">
+            <div style="text-align:left; font-size:12px;">
+                <p><strong>Customer:</strong> ${name}</p>
+                <p><strong>Table No:</strong> ${table}</p>
+                <p><strong>Items:</strong><br> ${items}</p>
+            </div>
+            <hr style="border:1px dashed #000">
+            <h3 style="margin:10px 0;">TOTAL: ৳${total}</h3>
+            <hr style="border:1px dashed #000">
+            <p style="font-size:10px;">ধন্যবাদ, আবার আসবেন!</p>
+            <p style="font-size:8px; margin-top:10px;">Powered by Supreme IT</p>
+        </div>
+    `;
+
+    setTimeout(() => {
+        window.print();
+        pArea.classList.add('hidden'); // প্রিন্ট শেষ হলে আবার হাইড করা
+    }, 500);
+};
     </script>
 </body>
 </html>
