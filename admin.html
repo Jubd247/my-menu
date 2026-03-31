@@ -71,6 +71,13 @@
     <div id="p-area" class="hidden"></div>
 
     <script type="module">
+        import { deleteDoc } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js"; // এই লাইনটি ইমপোর্টের সাথে যোগ কর
+
+window.deleteItem = (id) => {
+    if(confirm("আপনি কি নিশ্চিতভাবে এই আইটেমটি ডিলিট করতে চান?")) {
+        deleteDoc(doc(db, "restaurants/demo-restaurant/menu", id)).then(() => alert("আইটেম ডিলিট হয়েছে!"));
+    }
+};
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
         import { getFirestore, collection, onSnapshot, query, orderBy, updateDoc, doc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
 
@@ -116,6 +123,15 @@ window.addEventListener('load', () => {
                 const amt = Number(o.total_amount) || 0;
                 if(o.status === 'Done') sales += amt;
                 // onSnapshot এর ভেতর এই অংশটুকু আপডেট কর
+                <div class="flex gap-3 items-center">
+    <button onclick="editItem('${d.id}', '${i.name}', ${i.price_full}, '${i.category}')" class="text-blue-400 text-[10px] uppercase font-bold hover:underline">Edit</button>
+    
+    <button onclick="deleteItem('${d.id}')" class="text-red-500 text-[10px] uppercase font-bold hover:underline">Delete</button>
+    
+    <button onclick="toggleStock('${d.id}', ${!i.is_available})" class="text-[10px] font-bold uppercase ${i.is_available?'text-green-500':'text-red-500'}">
+        ${i.is_available?'In Stock':'Out'}
+    </button>
+</div>
 let sales = 0; 
 let cashSales = 0; 
 let digitalSales = 0;
