@@ -96,10 +96,6 @@ window.addEventListener('load', () => {
         document.getElementById('login').style.display = 'none';
     }
 });
-        window.logout = () => {
-    localStorage.removeItem('isAdminLoggedIn');
-    location.reload(); // পেজ রিফ্রেশ দিলে আবার পাসওয়ার্ড চাবে
-};
 
         // চার্ট সেটআপ
         const ctx = document.getElementById('salesChart').getContext('2d');
